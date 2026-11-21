@@ -33,7 +33,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Info & Health Check
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({
     status: 'ok',
     app: 'ManhwaVerse API',
@@ -43,20 +43,25 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Registrasi Route Utama
-app.use('/api/auth', authRoutes);
-app.use('/api/comics', comicRoutes);
-app.use('/api/characters', characterRoutes);
-app.use('/api/genres', genreRoutes);
-app.use('/api/tracker', trackerRoutes);
-app.use('/api/profiles', profileRoutes);
+// Registrasi Route Utama (Mendukung baik /api/... maupun direct /...)
+const registerRoutes = (prefix = '') => {
+  app.use(`${prefix}/auth`, authRoutes);
+  app.use(`${prefix}/comics`, comicRoutes);
+  app.use(`${prefix}/characters`, characterRoutes);
+  app.use(`${prefix}/genres`, genreRoutes);
+  app.use(`${prefix}/tracker`, trackerRoutes);
+  app.use(`${prefix}/profiles`, profileRoutes);
+};
+
+registerRoutes('/api');
+registerRoutes('');
 
 // Penanganan Route Tidak Ditemukan & Error
 app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Jalankan server jika dieksekusi langsung
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`\n===========================================`);
     console.log(`🚀 Server ManhwaVerse berjalan pada port ${PORT}`);
