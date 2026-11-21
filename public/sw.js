@@ -1,4 +1,4 @@
-const CACHE_NAME = 'manhwaverse-v1.0.0';
+const CACHE_NAME = 'manhwaverse-v1.0.1';
 
 // Aset inti kerangka antarmuka (App Shell) untuk fungsi offline
 const STATIC_ASSETS = [
