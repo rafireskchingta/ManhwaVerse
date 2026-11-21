@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Meta Informasi & SEO -->
+    <title>ManhwaVerse – Direktori & Pelacak Bacaan Manhwa</title>
+    <meta name="description" content="Temukan Ceritamu, Catat Perjalanan Bacamu. Direktori manhwa/manhua dan pelacak progres bacaan komik pribadi Anda." />
+    <meta name="theme-color" content="#795044" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="ManhwaVerse" />
+
+    <!-- Favicon & PWA Manifest -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Google Fonts: Literata (Serif) & Source Sans 3 (Sans-serif) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..600&family=Source+Sans+3:ital,wght@0,300..700;1,400..600&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-manhwa-bg text-manhwa-text antialiased font-sans min-h-screen selection:bg-manhwa-accent selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('ManhwaVerse Service Worker registered with scope:', registration.scope);
+            })
+            .catch((error) => {
+              console.warn('ManhwaVerse Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>

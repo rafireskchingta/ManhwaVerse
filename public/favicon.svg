@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <rect width="512" height="512" rx="112" fill="#795044"/>
+  <path d="M128 144 C128 128, 144 112, 168 112 L336 112 C360 112, 384 128, 384 144 L384 376 C384 392, 360 400, 336 400 L168 400 C144 400, 128 392, 128 376 Z" fill="#FFFEFA" opacity="0.95"/>
+  <path d="M128 144 C128 128, 144 112, 168 112 L256 112 L256 400 L168 400 C144 400, 128 392, 128 376 Z" fill="#F5F2EB"/>
+  <line x1="256" y1="112" x2="256" y2="400" stroke="#795044" stroke-width="8" stroke-linecap="round"/>
+  <!-- Elegant hourglass / bookmark accent -->
+  <path d="M220 200 L292 200 L268 250 L292 300 L220 300 L244 250 Z" fill="#8B896E" opacity="0.85"/>
+  <!-- Ribbon -->
+  <path d="M256 112 L256 180 L244 165 L232 180 L232 112 Z" fill="#795044"/>
+  <circle cx="256" cy="250" r="8" fill="#FFFEFA"/>
+</svg>
