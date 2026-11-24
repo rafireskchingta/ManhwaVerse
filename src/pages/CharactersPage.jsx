@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Users, Filter, X } from 'lucide-react';
+import { Search, Users, Filter, X, WifiOff } from 'lucide-react';
 import { characterService } from '../services/characterService';
 import { CharacterCard } from '../components/CharacterCard';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { EmptyState } from '../components/EmptyState';
+import { useOnlineStatus } from '../hooks/useOnlineStatus';
 
 export const CharactersPage = () => {
+  const isOnline = useOnlineStatus();
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,14 +32,18 @@ export const CharactersPage = () => {
         setCharacters(data);
       } catch (err) {
         console.error('Error saat memuat karakter:', err);
-        setError('Gagal memuat daftar karakter. Silakan coba beberapa saat lagi.');
+        setError(
+          isOnline
+            ? 'Gagal memuat daftar karakter. Silakan coba beberapa saat lagi.'
+            : 'Anda sedang offline dan daftar karakter belum tersimpan di cache perangkat.'
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchCharacters();
-  }, []);
+  }, [isOnline]);
 
   const filteredCharacters = characters.filter((c) => {
     if (searchQuery.trim()) {
@@ -62,6 +68,16 @@ export const CharactersPage = () => {
 
   return (
     <div className="space-y-6">
+      {/* Banner Mode Offline */}
+      {!isOnline && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-900 text-xs font-medium">
+          <WifiOff className="w-4 h-4 text-amber-700 flex-shrink-0" />
+          <span>
+            Mode Offline: Menampilkan {characters.length} profil karakter yang tersimpan di perangkat.
+          </span>
+        </div>
+      )}
+
       {/* Header Halaman */}
       <section className="bg-manhwa-card rounded-2xl border border-manhwa-border p-5 md:p-7 shadow-soft">
         <div className="max-w-4xl">

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, BookOpen, Shield, Sparkles } from 'lucide-react';
+import { ArrowLeft, BookOpen, Shield, Sparkles, WifiOff } from 'lucide-react';
 import { characterService } from '../services/characterService';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { useOnlineStatus } from '../hooks/useOnlineStatus';
 
 export const CharacterDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const isOnline = useOnlineStatus();
 
   const [character, setCharacter] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,14 +24,18 @@ export const CharacterDetailPage = () => {
         setCharacter(data);
       } catch (err) {
         console.error('Error saat memuat karakter:', err);
-        setError('Gagal memuat profil karakter.');
+        setError(
+          isOnline
+            ? 'Gagal memuat profil karakter.'
+            : 'Karakter ini belum pernah diakses saat online dan belum tersimpan di cache offline perangkat Anda.'
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchCharacterDetail();
-  }, [id]);
+  }, [id, isOnline]);
 
   if (loading) {
     return <LoadingSpinner message="Menyiapkan profil karakter..." />;
@@ -77,6 +83,16 @@ export const CharacterDetailPage = () => {
         <ArrowLeft className="w-4 h-4" />
         <span>Kembali</span>
       </button>
+
+      {/* Indikator Mode Offline */}
+      {!isOnline && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-900 text-xs font-medium">
+          <WifiOff className="w-4 h-4 text-amber-700 flex-shrink-0" />
+          <span>
+            Mode Offline: Membaca profil karakter dari cache tersimpan.
+          </span>
+        </div>
+      )}
 
       {/* Hero Profil Karakter */}
       <section className="bg-manhwa-card rounded-2xl border border-manhwa-border p-5 md:p-6 shadow-soft">

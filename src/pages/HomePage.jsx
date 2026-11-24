@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Sparkles, Filter, X, BookOpen, Layers } from 'lucide-react';
+import { Search, Sparkles, Filter, X, BookOpen, Layers, WifiOff } from 'lucide-react';
 import { comicService } from '../services/comicService';
 import { genreService } from '../services/genreService';
 import { ComicCard } from '../components/ComicCard';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { EmptyState } from '../components/EmptyState';
 import { useAuth } from '../hooks/useAuth';
+import { useOnlineStatus } from '../hooks/useOnlineStatus';
 
 export const HomePage = () => {
   const { user } = useAuth();
+  const isOnline = useOnlineStatus();
 
   const [comics, setComics] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -36,14 +38,18 @@ export const HomePage = () => {
         setGenres(genresData);
       } catch (err) {
         console.error('Error saat memuat beranda:', err);
-        setError('Gagal memuat katalog komik. Pastikan server backend telah aktif.');
+        setError(
+          isOnline
+            ? 'Gagal memuat katalog komik. Pastikan server backend telah aktif.'
+            : 'Anda sedang offline dan katalog komik belum pernah tersimpan di cache perangkat.'
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [isOnline]);
 
   // Filter comics locally based on search, genre, and status
   const filteredComics = comics.filter((comic) => {
@@ -85,6 +91,16 @@ export const HomePage = () => {
 
   return (
     <div className="space-y-6">
+      {/* Banner Mode Offline */}
+      {!isOnline && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-900 text-xs font-medium">
+          <WifiOff className="w-4 h-4 text-amber-700 flex-shrink-0" />
+          <span>
+            Mode Offline: Menampilkan {comics.length} judul komik yang tersimpan di memori perangkat. Anda tetap dapat mencari dan melihat detailnya.
+          </span>
+        </div>
+      )}
+
       {/* Sapaan Hangat & Greeting */}
       <section className="bg-manhwa-card rounded-2xl border border-manhwa-border p-5 md:p-7 shadow-soft">
         <div className="max-w-4xl">

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BookmarkCheck, BookOpen, CheckCircle, Clock, Trash2, Plus, LogIn, AlertCircle } from 'lucide-react';
+import { BookmarkCheck, BookOpen, CheckCircle, Clock, Trash2, Plus, LogIn, AlertCircle, WifiOff } from 'lucide-react';
 import { trackerService } from '../services/trackerService';
 import { TrackerCard } from '../components/TrackerCard';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { EmptyState } from '../components/EmptyState';
 import { Modal } from '../components/Modal';
 import { useAuth } from '../hooks/useAuth';
+import { useOnlineStatus } from '../hooks/useOnlineStatus';
 
 export const TrackerPage = () => {
   const { user, isAuthenticated } = useAuth();
+  const isOnline = useOnlineStatus();
 
   const [activeTab, setActiveTab] = useState('Sedang Dibaca'); // 'Sedang Dibaca' or 'Selesai Dibaca'
   const [trackerItems, setTrackerItems] = useState([]);
@@ -63,10 +65,14 @@ export const TrackerPage = () => {
 
   useEffect(() => {
     fetchTrackerData();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isOnline]);
 
   // Handle Quick +1 or direct progress update
   const handleUpdateProgressDirect = async (id, payload) => {
+    if (!isOnline) {
+      showFeedback('error', 'Pembaruan progres tracker membutuhkan koneksi internet.');
+      return;
+    }
     try {
       await trackerService.updateProgress(id, payload);
       await fetchTrackerData();
@@ -122,6 +128,11 @@ export const TrackerPage = () => {
       return;
     }
 
+    if (!isOnline) {
+      showFeedback('error', 'Pembaruan progres tracker membutuhkan koneksi internet.');
+      return;
+    }
+
     setChapterError(null);
 
     try {
@@ -143,6 +154,11 @@ export const TrackerPage = () => {
   // Confirm delete
   const handleConfirmDelete = async () => {
     if (!deletingId) return;
+
+    if (!isOnline) {
+      showFeedback('error', 'Menghapus item tracker membutuhkan koneksi internet.');
+      return;
+    }
 
     try {
       setIsSubmitting(true);
@@ -199,6 +215,16 @@ export const TrackerPage = () => {
 
   return (
     <div className="space-y-6">
+      {/* Banner Mode Offline */}
+      {!isOnline && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-900 text-xs font-medium">
+          <WifiOff className="w-4 h-4 text-amber-700 flex-shrink-0" />
+          <span>
+            Mode Offline: Menampilkan daftar bacaan yang tersimpan di perangkat. Pembaruan chapter akan disinkronkan saat online.
+          </span>
+        </div>
+      )}
+
       {/* Alert Notifikasi Aksi */}
       {actionFeedback && (
         <div

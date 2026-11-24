@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Compass, Sparkles, BookOpen, ChevronRight } from 'lucide-react';
+import { Compass, Sparkles, BookOpen, ChevronRight, WifiOff } from 'lucide-react';
 import { comicService } from '../services/comicService';
 import { ComicCard } from '../components/ComicCard';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { EmptyState } from '../components/EmptyState';
+import { useOnlineStatus } from '../hooks/useOnlineStatus';
 
 export const DiscoverPage = () => {
+  const isOnline = useOnlineStatus();
   const [selectedGenre, setSelectedGenre] = useState('Historical');
   const [comics, setComics] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,19 +61,33 @@ export const DiscoverPage = () => {
         setComics(data);
       } catch (err) {
         console.error('Error saat memuat rekomendasi:', err);
-        setError('Gagal memuat rekomendasi genre.');
+        setError(
+          isOnline
+            ? 'Gagal memuat rekomendasi genre.'
+            : `Belum ada komik genre "${selectedGenre}" yang tersimpan di cache offline perangkat Anda.`
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchGenreComics();
-  }, [selectedGenre]);
+  }, [selectedGenre, isOnline]);
 
   const activeGenreInfo = focusGenres.find((g) => g.name === selectedGenre) || focusGenres[0];
 
   return (
     <div className="space-y-6">
+      {/* Banner Mode Offline */}
+      {!isOnline && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-900 text-xs font-medium">
+          <WifiOff className="w-4 h-4 text-amber-700 flex-shrink-0" />
+          <span>
+            Mode Offline: Menampilkan komik genre yang tersimpan di perangkat.
+          </span>
+        </div>
+      )}
+
       {/* Header Temukan */}
       <section className="bg-manhwa-card rounded-2xl border border-manhwa-border p-5 md:p-7 shadow-soft">
         <div className="max-w-4xl">

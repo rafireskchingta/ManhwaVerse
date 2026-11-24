@@ -1,9 +1,23 @@
 import api from './api';
+import { offlineStorage } from './offlineStorage';
 
 export const genreService = {
   async getAll() {
-    const res = await api.get('/genres');
-    return res.data || [];
+    try {
+      const res = await api.get('/genres');
+      const data = res.data || [];
+      if (data.length > 0) {
+        await offlineStorage.saveGenres(data);
+      }
+      return data;
+    } catch (err) {
+      console.warn('[genreService] Gagal memuat genre online, mencoba cache offline:', err.message);
+      const cached = await offlineStorage.getGenres();
+      if (cached && cached.length > 0) {
+        return cached;
+      }
+      throw err;
+    }
   },
 
   async getById(id) {

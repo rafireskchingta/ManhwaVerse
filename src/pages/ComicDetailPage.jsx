@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import {
   ArrowLeft,
   BookOpen,
@@ -11,19 +11,25 @@ import {
   Clock,
   Sparkles,
   Users,
-  AlertCircle
+  AlertCircle,
+  Share2,
+  WifiOff
 } from 'lucide-react';
 import { comicService } from '../services/comicService';
 import { trackerService } from '../services/trackerService';
 import { CharacterCard } from '../components/CharacterCard';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Modal } from '../components/Modal';
+import { ShareComicModal } from '../components/ShareComicModal';
 import { useAuth } from '../hooks/useAuth';
+import { useOnlineStatus } from '../hooks/useOnlineStatus';
 
 export const ComicDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated } = useAuth();
+  const isOnline = useOnlineStatus();
 
   const [comic, setComic] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -38,6 +44,9 @@ export const ComicDetailPage = () => {
   const [savingTracker, setSavingTracker] = useState(false);
   const [trackerError, setTrackerError] = useState(null);
   const [chapterError, setChapterError] = useState(null);
+
+  // Share modal state
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchComicDetail = async () => {
@@ -58,14 +67,18 @@ export const ComicDetailPage = () => {
         }
       } catch (err) {
         console.error('Error saat memuat detail komik:', err);
-        setError('Gagal memuat informasi komik.');
+        setError(
+          isOnline
+            ? 'Gagal memuat informasi komik. Komik mungkin telah dihapus.'
+            : 'Komik ini belum tersimpan di cache offline perangkat Anda. Silakan hubungkan perangkat ke internet untuk membukanya pertama kali.'
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchComicDetail();
-  }, [id, isAuthenticated]);
+  }, [id, isAuthenticated, isOnline]);
 
   const handleChapterChange = (valStr) => {
     setTrackedChapter(valStr);
@@ -86,7 +99,12 @@ export const ComicDetailPage = () => {
   const handleSaveTracker = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate('/login', { state: { from: location } });
+      return;
+    }
+
+    if (!isOnline) {
+      setTrackerError('Pembaruan progres tracker membutuhkan koneksi internet untuk sinkronisasi ke server.');
       return;
     }
 
@@ -131,13 +149,16 @@ export const ComicDetailPage = () => {
 
   if (error || !comic) {
     return (
-      <div className="py-12 text-center max-w-md mx-auto">
-        <p className="text-sm text-rose-800 bg-rose-50 p-4 rounded-xl border border-rose-200">
-          {error || 'Komik tidak ditemukan.'}
-        </p>
+      <div className="py-12 text-center max-w-md mx-auto space-y-4">
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm">
+          <p className="font-semibold mb-1">Gagal Membuka Komik</p>
+          <p className="text-xs text-rose-700 leading-relaxed">
+            {error || 'Komik tidak ditemukan.'}
+          </p>
+        </div>
         <button
           onClick={() => navigate('/')}
-          className="mt-4 px-4 py-2 text-xs font-semibold rounded-lg bg-manhwa-surface text-manhwa-text hover:bg-manhwa-highlight border border-manhwa-border transition-smooth"
+          className="px-4 py-2 text-xs font-semibold rounded-lg bg-manhwa-surface text-manhwa-text hover:bg-manhwa-highlight border border-manhwa-border transition-smooth"
         >
           Kembali ke Katalog
         </button>
@@ -152,14 +173,36 @@ export const ComicDetailPage = () => {
 
   return (
     <div className="space-y-6">
-      {/* Tombol Kembali */}
-      <button
-        onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-manhwa-muted hover:text-manhwa-text transition-smooth py-1"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        <span>Kembali</span>
-      </button>
+      {/* Top Bar: Tombol Kembali & Tombol Bagikan Komik */}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-manhwa-muted hover:text-manhwa-text transition-smooth py-1"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Kembali</span>
+        </button>
+
+        {/* Tombol Share Link Header */}
+        <button
+          onClick={() => setIsShareModalOpen(true)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-manhwa-card text-manhwa-accent hover:bg-manhwa-surface border border-manhwa-border text-xs font-semibold shadow-xs transition-smooth"
+          title="Bagikan Komik Ini"
+        >
+          <Share2 className="w-3.5 h-3.5" />
+          <span>Bagikan</span>
+        </button>
+      </div>
+
+      {/* Indikator Status Offline */}
+      {!isOnline && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-900 text-xs font-medium">
+          <WifiOff className="w-4 h-4 text-amber-700 flex-shrink-0" />
+          <span>
+            Mode Offline: Anda sedang membaca salinan komik yang tersimpan di perangkat.
+          </span>
+        </div>
+      )}
 
       {/* Main Comic Hero Section */}
       <section className="bg-manhwa-card rounded-2xl border border-manhwa-border p-5 md:p-6 shadow-soft">
@@ -251,45 +294,58 @@ export const ComicDetailPage = () => {
               </div>
             </div>
 
-            {/* Reading Tracker Action Button */}
+            {/* Action Buttons: Tracker + Bagikan Komik (Shopee style) */}
             <div className="mt-6 pt-4 border-t border-manhwa-border/60">
-              {trackerItem ? (
-                <div className="bg-manhwa-surface p-4 rounded-xl border border-manhwa-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle className="w-5 h-5 text-emerald-700 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-semibold text-manhwa-text">
-                        Ada di Bacaan Saya ({trackerItem.reading_status})
-                      </p>
-                      <p className="text-xs md:text-sm text-manhwa-muted mt-0.5">
-                        Progres saat ini: Chapter {trackerItem.current_chapter}
-                        {comic.total_chapters > 0 && ` dari ${comic.total_chapters}`}
-                      </p>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                {/* Tracker Button / Status */}
+                {trackerItem ? (
+                  <div className="flex-grow bg-manhwa-surface p-3.5 rounded-xl border border-manhwa-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <CheckCircle className="w-5 h-5 text-emerald-700 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-semibold text-manhwa-text">
+                          Ada di Bacaan Saya ({trackerItem.reading_status})
+                        </p>
+                        <p className="text-xs md:text-sm text-manhwa-muted mt-0.5">
+                          Progres saat ini: Chapter {trackerItem.current_chapter}
+                          {comic.total_chapters > 0 && ` dari ${comic.total_chapters}`}
+                        </p>
+                      </div>
                     </div>
-                  </div>
 
+                    <button
+                      onClick={() => setIsTrackerModalOpen(true)}
+                      className="px-4 py-2 rounded-xl bg-manhwa-accent text-white font-semibold text-sm hover:bg-manhwa-accent-hover transition-smooth shadow-xs whitespace-nowrap cursor-pointer"
+                    >
+                      Ubah Progres
+                    </button>
+                  </div>
+                ) : (
                   <button
-                    onClick={() => setIsTrackerModalOpen(true)}
-                    className="px-4 py-2 rounded-xl bg-manhwa-accent text-white font-semibold text-sm hover:bg-manhwa-accent-hover transition-smooth shadow-xs whitespace-nowrap cursor-pointer"
+                    onClick={() => {
+                      if (!isAuthenticated) {
+                        navigate('/login', { state: { from: location } });
+                      } else {
+                        setIsTrackerModalOpen(true);
+                      }
+                    }}
+                    className="flex-grow sm:flex-grow-0 px-5 py-2.5 rounded-xl bg-manhwa-accent text-white font-semibold text-xs md:text-sm hover:bg-manhwa-accent-hover transition-smooth shadow-soft flex items-center justify-center gap-2"
                   >
-                    Ubah Progres
+                    <BookmarkCheck className="w-4 h-4" />
+                    <span>Tambahkan ke Bacaan Saya</span>
                   </button>
-                </div>
-              ) : (
+                )}
+
+                {/* Tombol Bagikan Komik (Shopee Share Style) */}
                 <button
-                  onClick={() => {
-                    if (!isAuthenticated) {
-                      navigate('/login');
-                    } else {
-                      setIsTrackerModalOpen(true);
-                    }
-                  }}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-manhwa-accent text-white font-semibold text-xs md:text-sm hover:bg-manhwa-accent-hover transition-smooth shadow-soft flex items-center justify-center gap-2"
+                  type="button"
+                  onClick={() => setIsShareModalOpen(true)}
+                  className="px-4 py-2.5 rounded-xl bg-manhwa-surface text-manhwa-text hover:bg-manhwa-highlight border border-manhwa-border font-semibold text-xs md:text-sm transition-smooth shadow-xs flex items-center justify-center gap-2"
                 >
-                  <BookmarkCheck className="w-4 h-4" />
-                  <span>Tambahkan ke Bacaan Saya</span>
+                  <Share2 className="w-4 h-4 text-manhwa-accent" />
+                  <span>Bagikan Komik</span>
                 </button>
-              )}
+              </div>
             </div>
           </div>
         </div>
@@ -348,53 +404,48 @@ export const ComicDetailPage = () => {
 
           <div>
             <label className="block text-xs font-semibold text-manhwa-text mb-1">
-              Chapter Terakhir yang Dibaca
-            </label>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                min="0"
-                value={trackedChapter}
-                onChange={(e) => handleChapterChange(e.target.value)}
-                className={`w-full px-3 py-2 rounded-xl bg-manhwa-surface border text-xs md:text-sm focus:outline-none font-serif transition-smooth ${
-                  chapterError
-                    ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20'
-                    : 'border-manhwa-border focus:border-manhwa-accent'
-                }`}
-                placeholder="0"
-                required
-              />
-              {comic.total_chapters > 0 && (
-                <span className="text-xs text-manhwa-muted whitespace-nowrap">
-                  / {comic.total_chapters} Ch
-                </span>
-              )}
-            </div>
-
-            {/* Custom Validation Message */}
-            {chapterError && (
-              <div className="mt-2 p-2.5 rounded-xl bg-rose-50 border border-rose-200/90 text-rose-800 text-xs flex items-start gap-2 shadow-xs animate-fadeIn">
-                <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
-                <span className="leading-relaxed font-medium">{chapterError}</span>
-              </div>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-manhwa-text mb-1">
               Status Bacaan
             </label>
             <select
               value={trackedStatus}
               onChange={(e) => setTrackedStatus(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-manhwa-surface border border-manhwa-border text-xs md:text-sm focus:outline-none focus:border-manhwa-accent"
+              className="w-full px-3 py-2 text-xs md:text-sm bg-manhwa-surface border border-manhwa-border rounded-xl text-manhwa-text focus:outline-none focus:ring-1 focus:ring-manhwa-accent"
             >
               <option value="Sedang Dibaca">Sedang Dibaca</option>
               <option value="Selesai Dibaca">Selesai Dibaca</option>
             </select>
           </div>
 
-          <div className="flex justify-end gap-2 pt-2">
+          <div>
+            <label className="block text-xs font-semibold text-manhwa-text mb-1">
+              Chapter Terakhir Dibaca
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                min="0"
+                max={comic.total_chapters > 0 ? comic.total_chapters : undefined}
+                value={trackedChapter}
+                onChange={(e) => handleChapterChange(e.target.value)}
+                placeholder="0"
+                className={`w-full px-3 py-2 text-xs md:text-sm bg-manhwa-surface border rounded-xl text-manhwa-text focus:outline-none focus:ring-1 ${
+                  chapterError
+                    ? 'border-rose-400 focus:ring-rose-400'
+                    : 'border-manhwa-border focus:ring-manhwa-accent'
+                }`}
+              />
+              {comic.total_chapters > 0 && (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-manhwa-muted">
+                  / {comic.total_chapters} Ch
+                </span>
+              )}
+            </div>
+            {chapterError && (
+              <p className="text-[11px] text-rose-600 mt-1 font-medium">{chapterError}</p>
+            )}
+          </div>
+
+          <div className="pt-2 flex justify-end gap-2">
             <button
               type="button"
               onClick={() => {
@@ -402,20 +453,27 @@ export const ComicDetailPage = () => {
                 setTrackerError(null);
                 setChapterError(null);
               }}
-              className="px-4 py-2 text-xs font-semibold rounded-lg bg-manhwa-surface text-manhwa-text hover:bg-manhwa-highlight border border-manhwa-border transition-smooth cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-manhwa-surface text-manhwa-muted hover:text-manhwa-text border border-manhwa-border text-xs font-semibold transition-smooth"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={savingTracker || Boolean(chapterError)}
-              className="px-4 py-2 text-xs font-semibold rounded-lg bg-manhwa-accent text-white hover:bg-manhwa-accent-hover transition-smooth disabled:opacity-60 cursor-pointer shadow-xs"
+              className="px-4 py-2 rounded-xl bg-manhwa-accent text-white text-xs font-semibold hover:bg-manhwa-accent-hover transition-smooth shadow-xs disabled:opacity-50"
             >
-              {savingTracker ? 'Menyimpan...' : 'Simpan ke Tracker'}
+              {savingTracker ? 'Menyimpan...' : 'Simpan Progres'}
             </button>
           </div>
         </form>
       </Modal>
+
+      {/* Shopee-style Share Comic Modal */}
+      <ShareComicModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        comic={comic}
+      />
     </div>
   );
 };
