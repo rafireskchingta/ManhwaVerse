@@ -30,9 +30,21 @@
     <script>
       if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
         window.addEventListener('load', () => {
+          // Bersihkan cache versi lama agar pembaruan kode langsung aktif
+          if ('caches' in window) {
+            caches.keys().then((keys) => {
+              keys.forEach((key) => {
+                if (!key.endsWith('v1.3.0')) {
+                  caches.delete(key);
+                }
+              });
+            });
+          }
+
           navigator.serviceWorker.register('/sw.js')
             .then((registration) => {
               console.log('ManhwaVerse Service Worker registered with scope:', registration.scope);
+              registration.update();
             })
             .catch((error) => {
               console.warn('ManhwaVerse Service Worker registration failed:', error);

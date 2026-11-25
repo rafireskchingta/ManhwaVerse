@@ -80,6 +80,16 @@ export const comicService = {
     }
   },
 
+  async getReadLink(id, chapter = 0) {
+    try {
+      const res = await api.get(`/comics/${id}/read-link?chapter=${encodeURIComponent(chapter)}`);
+      return res.data || null;
+    } catch (err) {
+      console.warn('[comicService] Gagal resolve link Komiku:', err.message);
+      return null;
+    }
+  },
+
   async create(payload) {
     const res = await api.post('/comics', payload);
     return res.data;

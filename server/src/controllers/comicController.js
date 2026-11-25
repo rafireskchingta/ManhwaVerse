@@ -1,4 +1,5 @@
 import { comicModel } from '../models/comicModel.js';
+import { komikuService } from '../services/komikuService.js';
 
 export const comicController = {
   async getAll(req, res, next) {
@@ -38,6 +39,34 @@ export const comicController = {
       return res.json({
         success: true,
         data: comic
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getReadLink(req, res, next) {
+    try {
+      const { id } = req.params;
+      const chapter = parseInt(req.query.chapter, 10) || 0;
+      const comic = await comicModel.getById(id);
+
+      if (!comic) {
+        return res.status(404).json({
+          success: false,
+          message: 'Komik tidak ditemukan.'
+        });
+      }
+
+      const linkInfo = await komikuService.resolveReadLink({
+        title: comic.title,
+        alternative_title: comic.alternative_title,
+        chapter
+      });
+
+      return res.json({
+        success: true,
+        data: linkInfo
       });
     } catch (error) {
       next(error);

@@ -10,6 +10,7 @@ router.post('/:id/restore', verifyToken, requireAdmin, comicController.restore);
 
 // Endpoint publik
 router.get('/', comicController.getAll);
+router.get('/:id/read-link', comicController.getReadLink);
 router.get('/:id', comicController.getById);
 
 // Endpoint manajemen khusus Admin

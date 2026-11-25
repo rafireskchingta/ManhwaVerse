@@ -1,6 +1,6 @@
-const STATIC_CACHE_NAME = 'manhwaverse-static-v1.1.0';
-const API_CACHE_NAME = 'manhwaverse-api-v1.1.0';
-const IMAGE_CACHE_NAME = 'manhwaverse-images-v1.1.0';
+const STATIC_CACHE_NAME = 'manhwaverse-static-v1.3.0';
+const API_CACHE_NAME = 'manhwaverse-api-v1.3.0';
+const IMAGE_CACHE_NAME = 'manhwaverse-images-v1.3.0';
 
 // Aset inti antarmuka (App Shell) untuk fungsi offline
 const STATIC_ASSETS = [
@@ -16,14 +16,14 @@ const STATIC_ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE_NAME).then((cache) => {
-      console.log('[Service Worker] Pre-caching App Shell');
+      console.log('[Service Worker] Pre-caching App Shell v1.3.0');
       return cache.addAll(STATIC_ASSETS);
     })
   );
   self.skipWaiting();
 });
 
-// Event Activate: Bersihkan cache versi usang
+// Event Activate: Bersihkan seluruh cache versi lama
 self.addEventListener('activate', (event) => {
   const currentCaches = [STATIC_CACHE_NAME, API_CACHE_NAME, IMAGE_CACHE_NAME];
   event.waitUntil(
@@ -48,11 +48,19 @@ self.addEventListener('fetch', (event) => {
   // 1. Tangani Navigasi Halaman (HTML): Network-first dengan fallback App Shell
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(async () => {
-        const cachedIndex = await caches.match('/index.html');
-        if (cachedIndex) return cachedIndex;
-        return caches.match('/');
-      })
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(STATIC_CACHE_NAME).then((cache) => cache.put('/index.html', copy));
+          }
+          return networkResponse;
+        })
+        .catch(async () => {
+          const cachedIndex = await caches.match('/index.html');
+          if (cachedIndex) return cachedIndex;
+          return caches.match('/');
+        })
     );
     return;
   }
@@ -64,8 +72,8 @@ self.addEventListener('fetch', (event) => {
 
   // 3. Tangani API GET Requests (Katalog komik, detail komik, karakter, genre, tracker)
   if (url.pathname.startsWith('/api/')) {
-    // Jangan cache endpoint autentikasi (login, register, me, refresh)
-    if (url.pathname.includes('/auth/')) {
+    // Jangan cache endpoint autentikasi (login, register, me, refresh) atau read-link dinamis
+    if (url.pathname.includes('/auth/') || url.pathname.includes('/read-link')) {
       return;
     }
 
@@ -82,13 +90,11 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch(async () => {
-          // Cari respons yang sudah pernah di-cache sebelumnya
           const cachedResponse = await caches.match(event.request);
           if (cachedResponse) {
             return cachedResponse;
           }
 
-          // Fallback respons JSON jika belum pernah dibuka dan sedang offline
           return new Response(
             JSON.stringify({
               success: false,
@@ -106,15 +112,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 4. Tangani Gambar (Cover komik, foto karakter, icon, Unsplash, Supabase storage)
+  // 4. Tangani Gambar (Cover komik, foto karakter, icon, Unsplash, Supabase, Komiku thumbnail)
   const isImageRequest =
     event.request.destination === 'image' ||
     /\.(png|jpg|jpeg|svg|webp|gif|avif)(\?.*)?$/i.test(url.pathname) ||
     url.hostname.includes('unsplash.com') ||
-    url.hostname.includes('supabase.co');
+    url.hostname.includes('supabase.co') ||
+    url.hostname.includes('komiku.org');
 
   if (isImageRequest) {
-    // Strategi Cache-First dengan Network Fallback
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
         if (cachedResponse) {
@@ -135,7 +141,6 @@ self.addEventListener('fetch', (event) => {
             return networkResponse;
           })
           .catch(() => {
-            // Jika gambar gagal dimuat saat offline, fallback ke favicon lokal
             return caches.match('/favicon.svg');
           });
       })
@@ -143,14 +148,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 5. Tangani Aset Statis Lainnya (JS, CSS, Font Web): Cache-First dengan Network Fallback
+  // 5. Tangani Kode JS/CSS/Vite/Font: NETWORK-FIRST dengan Cache Fallback
+  // Memastikan perubahan kode terbaru selalu dimuat saat online, namun tetap bisa jalan saat offline!
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-
-      return fetch(event.request).then((networkResponse) => {
+    fetch(event.request)
+      .then((networkResponse) => {
         if (
           networkResponse &&
           networkResponse.status === 200 &&
@@ -162,7 +164,9 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return networkResponse;
-      });
-    })
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });

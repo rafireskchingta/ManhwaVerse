@@ -13,14 +13,17 @@ import {
   Users,
   AlertCircle,
   Share2,
-  WifiOff
+  WifiOff,
+  Play
 } from 'lucide-react';
 import { comicService } from '../services/comicService';
 import { trackerService } from '../services/trackerService';
+import { offlineStorage } from '../services/offlineStorage';
 import { CharacterCard } from '../components/CharacterCard';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Modal } from '../components/Modal';
 import { ShareComicModal } from '../components/ShareComicModal';
+import { QuickProgressModal } from '../components/QuickProgressModal';
 import { useAuth } from '../hooks/useAuth';
 import { useOnlineStatus } from '../hooks/useOnlineStatus';
 
@@ -48,6 +51,11 @@ export const ComicDetailPage = () => {
   // Share modal state
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
+  // Quick return detection modal state (Trik 1)
+  const [showQuickReturnModal, setShowQuickReturnModal] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
+  const [resolvedReadLink, setResolvedReadLink] = useState(null);
+
   useEffect(() => {
     const fetchComicDetail = async () => {
       try {
@@ -64,6 +72,14 @@ export const ComicDetailPage = () => {
             setTrackedChapter(tracked.current_chapter || 0);
             setTrackedStatus(tracked.reading_status || 'Sedang Dibaca');
           }
+        } else {
+          // Cek di penyimpanan tracker offline jika belum login
+          const localTracked = await offlineStorage.checkComicInTracker(id);
+          if (localTracked) {
+            setTrackerItem(localTracked);
+            setTrackedChapter(localTracked.current_chapter || 0);
+            setTrackedStatus(localTracked.reading_status || 'Sedang Dibaca');
+          }
         }
       } catch (err) {
         console.error('Error saat memuat detail komik:', err);
@@ -79,6 +95,161 @@ export const ComicDetailPage = () => {
 
     fetchComicDetail();
   }, [id, isAuthenticated, isOnline]);
+
+  // Listener Deteksi Kembali ke Tab Aplikasi (Trik 1: Tab Return Detection)
+  useEffect(() => {
+    const handleCheckReturn = () => {
+      if (document.visibilityState === 'visible') {
+        const raw = sessionStorage.getItem('mv_reading_session');
+        if (raw) {
+          try {
+            const sess = JSON.parse(raw);
+            if (sess.comic_id === id) {
+              const elapsed = Date.now() - (sess.started_at || 0);
+              // Jika user berada di luar setidaknya 2 detik
+              if (elapsed > 2000) {
+                setShowQuickReturnModal(true);
+                sessionStorage.removeItem('mv_reading_session');
+              }
+            }
+          } catch (e) {
+            sessionStorage.removeItem('mv_reading_session');
+          }
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleCheckReturn);
+    window.addEventListener('focus', handleCheckReturn);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleCheckReturn);
+      window.removeEventListener('focus', handleCheckReturn);
+    };
+  }, [id]);
+
+  // Pre-resolve tautan Komiku.org untuk komik & chapter saat ini (agar popup tidak diblokir browser)
+  useEffect(() => {
+    if (!comic || !isOnline) return;
+    let cancelled = false;
+    const currentCh = trackerItem?.current_chapter || 0;
+
+    comicService.getReadLink(id, currentCh).then((linkData) => {
+      if (!cancelled && linkData) {
+        setResolvedReadLink(linkData);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, comic?.id, trackerItem?.current_chapter, isOnline]);
+
+  // Fallback URL sinkron ke Komiku.org jika resolver belum selesai atau mode offline
+  const getFallbackKomikuUrl = (comicData) => {
+    if (!comicData) return 'https://komiku.org/';
+    const slugMap = {
+      "omniscient reader's viewpoint": 'https://komiku.org/manga/omniscient-readers-viewpoint/',
+      'omniscient readers viewpoint': 'https://komiku.org/manga/omniscient-readers-viewpoint/',
+      'solo leveling': 'https://komiku.org/manga/solo-leveling-id/',
+      'the beginning after the end': 'https://komiku.org/manga/the-beginning-after-the-end/',
+      'the world’s best engineer': 'https://komiku.org/manga/the-worlds-best-engineer/',
+      "the world's best engineer": 'https://komiku.org/manga/the-worlds-best-engineer/',
+      'the greatest estate developer': 'https://komiku.org/manga/the-worlds-best-engineer/',
+      'return of the flowery mountain sect': 'https://komiku.org/manga/return-of-the-flowery-mountain-sect/',
+      'return of the mount hua sect': 'https://komiku.org/manga/return-of-the-flowery-mountain-sect/',
+      'mercenary enrollment': 'https://komiku.org/manga/mercenary-enrollment/',
+      'nano machine': 'https://komiku.org/manga/nano-machine/',
+      'lookism': 'https://komiku.org/manga/lookism/',
+      'pick me up': 'https://komiku.org/manga/pick-me-up/',
+      'sss-class suicide hunter': 'https://komiku.org/manga/sss-class-suicide-hunter/',
+      'overgeared new': 'https://komiku.org/manga/overgeared-new/',
+      'one piece': 'https://komiku.org/manga/komik-one-piece-indo/',
+      'one punch man': 'https://komiku.org/manga/manga-one-punch-man/',
+      'jujutsu kaisen': 'https://komiku.org/manga/jujutsu-kaisen-indo/',
+      'blue lock': 'https://komiku.org/manga/blue-lock/',
+      'kimetsu no yaiba': 'https://komiku.org/manga/kimetsu-no-yaiba-indonesia/',
+      'chainsaw man': 'https://komiku.org/manga/123213-chainsaw-man/',
+      'the time-limited villainess who makes medicine': 'https://komiku.org/manga/the-time-limited-villainess-who-makes-medicine/',
+      'i’m a contract stepmother, but the tyrant is way too overprotective': 'https://komiku.org/manga/im-a-contract-stepmother-but-the-tyrant-is-way-too-overprotective/',
+      "i'm a contract stepmother, but the tyrant is way too overprotective": 'https://komiku.org/manga/im-a-contract-stepmother-but-the-tyrant-is-way-too-overprotective/',
+      'the boxer': 'https://komiku.org/manga/the-boxer/',
+      'i’ll be a villain in this life': 'https://komiku.org/manga/ill-be-a-villain-in-this-life/',
+      "i'll be a villain in this life": 'https://komiku.org/manga/ill-be-a-villain-in-this-life/',
+      'absolute sword sense': 'https://komiku.org/manga/absolute-sword-sense/'
+    };
+    const key = (comicData.title || '').trim().toLowerCase();
+    return (
+      slugMap[key] ||
+      `https://komiku.org/?post_type=manga&s=${encodeURIComponent((comicData.title || '').trim())}`
+    );
+  };
+
+  // Handler saat tombol "Baca" / "Lanjutkan" ditekan
+  const handleStartReading = () => {
+    if (!comic) return;
+
+    if (!isOnline) {
+      setToastMessage('Anda sedang offline. Hubungkan internet untuk membaca chapter di Komiku.org.');
+      setTimeout(() => setToastMessage(null), 4000);
+      return;
+    }
+
+    const currentCh = trackerItem?.current_chapter || 0;
+    const targetUrl = resolvedReadLink?.readUrl || getFallbackKomikuUrl(comic);
+
+    // Simpan penanda sesi bahwa pengguna sedang membaca komik ini
+    try {
+      sessionStorage.setItem(
+        'mv_reading_session',
+        JSON.stringify({
+          comic_id: id,
+          title: comic.title,
+          last_chapter: currentCh,
+          started_at: Date.now()
+        })
+      );
+    } catch (e) {
+      console.warn('Gagal menyimpan sesi baca:', e);
+    }
+
+    // Buka tab Komiku.org langsung ke chapter yang dituju
+    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  // Simpan progres cepat dari modal kepulangan (Quick Return Modal)
+  const handleQuickSaveProgress = async (newCh) => {
+    try {
+      if (isAuthenticated) {
+        const res = await trackerService.addToTracker({
+          comic_id: id,
+          reading_status: 'Sedang Dibaca',
+          current_chapter: newCh
+        });
+        setTrackerItem(res);
+      } else {
+        const localItem = {
+          id: `local-tracker-${id}`,
+          comic_id: id,
+          reading_status: 'Sedang Dibaca',
+          current_chapter: newCh,
+          comic
+        };
+        setTrackerItem(localItem);
+        const existingTracker = await offlineStorage.getTracker();
+        const filtered = (existingTracker || []).filter(
+          (t) => t.comic_id !== id && t.comic?.id !== id
+        );
+        await offlineStorage.saveTracker([localItem, ...filtered]);
+      }
+      setTrackedChapter(newCh);
+      setTrackedStatus('Sedang Dibaca');
+      setToastMessage(`✓ Progres bacaan berhasil diperbarui ke Chapter ${newCh}!`);
+      setTimeout(() => setToastMessage(null), 4000);
+    } catch (err) {
+      console.error('Gagal menyimpan progres cepat:', err);
+    }
+  };
 
   const handleChapterChange = (valStr) => {
     setTrackedChapter(valStr);
@@ -136,6 +307,8 @@ export const ComicDetailPage = () => {
       });
       setTrackerItem(res);
       setIsTrackerModalOpen(false);
+      setToastMessage(`✓ Progres berhasil disimpan ke Chapter ${val}!`);
+      setTimeout(() => setToastMessage(null), 4000);
     } catch (err) {
       setTrackerError(err.message || 'Gagal menyimpan ke daftar bacaan.');
     } finally {
@@ -170,6 +343,7 @@ export const ComicDetailPage = () => {
     'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80';
 
   const isCompleted = comic.status === 'Completed';
+  const hasReadingProgress = trackerItem && trackerItem.current_chapter > 0;
 
   return (
     <div className="space-y-6">
@@ -294,34 +468,42 @@ export const ComicDetailPage = () => {
               </div>
             </div>
 
-            {/* Action Buttons: Tracker + Bagikan Komik (Shopee style) */}
-            <div className="mt-6 pt-4 border-t border-manhwa-border/60">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                {/* Tracker Button / Status */}
-                {trackerItem ? (
-                  <div className="flex-grow bg-manhwa-surface p-3.5 rounded-xl border border-manhwa-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5">
-                      <CheckCircle className="w-5 h-5 text-emerald-700 flex-shrink-0" />
-                      <div>
-                        <p className="text-sm font-semibold text-manhwa-text">
-                          Ada di Bacaan Saya ({trackerItem.reading_status})
-                        </p>
-                        <p className="text-xs md:text-sm text-manhwa-muted mt-0.5">
-                          Progres saat ini: Chapter {trackerItem.current_chapter}
-                          {comic.total_chapters > 0 && ` dari ${comic.total_chapters}`}
-                        </p>
-                      </div>
-                    </div>
+            {/* Action Buttons: Baca/Lanjutkan + Tracker + Bagikan Komik */}
+            <div className="mt-6 pt-4 border-t border-manhwa-border/60 space-y-3">
+              <div className="flex flex-wrap items-center gap-3">
+                {/* Tombol Utama: "Baca" atau "Lanjutkan" (Trik 1) */}
+                <button
+                  type="button"
+                  onClick={handleStartReading}
+                  className="flex-grow sm:flex-grow-0 px-6 py-2.5 rounded-xl bg-manhwa-accent text-white font-semibold text-xs md:text-sm hover:bg-manhwa-accent-hover transition-smooth shadow-soft flex items-center justify-center gap-2 group cursor-pointer"
+                  title={hasReadingProgress ? `Lanjut membaca Chapter ${trackerItem.current_chapter}` : 'Mulai membaca komik ini'}
+                >
+                  {hasReadingProgress ? (
+                    <>
+                      <Play className="w-4 h-4 fill-white text-white group-hover:scale-110 transition-transform" />
+                      <span>Lanjutkan (Ch. {trackerItem.current_chapter})</span>
+                    </>
+                  ) : (
+                    <>
+                      <BookOpen className="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
+                      <span>Baca</span>
+                    </>
+                  )}
+                </button>
 
-                    <button
-                      onClick={() => setIsTrackerModalOpen(true)}
-                      className="px-4 py-2 rounded-xl bg-manhwa-accent text-white font-semibold text-sm hover:bg-manhwa-accent-hover transition-smooth shadow-xs whitespace-nowrap cursor-pointer"
-                    >
-                      Ubah Progres
-                    </button>
-                  </div>
+                {/* Status Tracker & Tombol Ubah Progres */}
+                {trackerItem ? (
+                  <button
+                    type="button"
+                    onClick={() => setIsTrackerModalOpen(true)}
+                    className="flex-grow sm:flex-grow-0 px-4 py-2.5 rounded-xl bg-manhwa-surface text-manhwa-text hover:bg-manhwa-highlight border border-manhwa-border font-semibold text-xs md:text-sm transition-smooth shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <CheckCircle className="w-4 h-4 text-emerald-700" />
+                    <span>Ubah Progres</span>
+                  </button>
                 ) : (
                   <button
+                    type="button"
                     onClick={() => {
                       if (!isAuthenticated) {
                         navigate('/login', { state: { from: location } });
@@ -329,10 +511,10 @@ export const ComicDetailPage = () => {
                         setIsTrackerModalOpen(true);
                       }
                     }}
-                    className="flex-grow sm:flex-grow-0 px-5 py-2.5 rounded-xl bg-manhwa-accent text-white font-semibold text-xs md:text-sm hover:bg-manhwa-accent-hover transition-smooth shadow-soft flex items-center justify-center gap-2"
+                    className="flex-grow sm:flex-grow-0 px-4 py-2.5 rounded-xl bg-manhwa-surface text-manhwa-text hover:bg-manhwa-highlight border border-manhwa-border font-semibold text-xs md:text-sm transition-smooth shadow-xs flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <BookmarkCheck className="w-4 h-4" />
-                    <span>Tambahkan ke Bacaan Saya</span>
+                    <BookmarkCheck className="w-4 h-4 text-manhwa-accent" />
+                    <span>Catat Progres Bacaan</span>
                   </button>
                 )}
 
@@ -340,12 +522,25 @@ export const ComicDetailPage = () => {
                 <button
                   type="button"
                   onClick={() => setIsShareModalOpen(true)}
-                  className="px-4 py-2.5 rounded-xl bg-manhwa-surface text-manhwa-text hover:bg-manhwa-highlight border border-manhwa-border font-semibold text-xs md:text-sm transition-smooth shadow-xs flex items-center justify-center gap-2"
+                  className="px-4 py-2.5 rounded-xl bg-manhwa-surface text-manhwa-text hover:bg-manhwa-highlight border border-manhwa-border font-semibold text-xs md:text-sm transition-smooth shadow-xs flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Share2 className="w-4 h-4 text-manhwa-accent" />
                   <span>Bagikan Komik</span>
                 </button>
               </div>
+
+              {/* Status Reading Tracker Pill (jika ada) */}
+              {trackerItem && (
+                <div className="bg-manhwa-surface/70 px-3.5 py-2 rounded-xl border border-manhwa-border/80 flex items-center justify-between text-xs">
+                  <span className="text-manhwa-muted">
+                    Status: <strong className="text-manhwa-text font-semibold">{trackerItem.reading_status}</strong>
+                  </span>
+                  <span className="text-manhwa-muted">
+                    Progres: <strong className="text-manhwa-accent font-semibold">Chapter {trackerItem.current_chapter}</strong>
+                    {comic.total_chapters > 0 && ` dari ${comic.total_chapters} Ch`}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -378,7 +573,7 @@ export const ComicDetailPage = () => {
         )}
       </section>
 
-      {/* Modal Tambahkan / Ubah Tracker */}
+      {/* Modal Tambahkan / Ubah Tracker Manual */}
       <Modal
         isOpen={isTrackerModalOpen}
         onClose={() => {
@@ -474,6 +669,23 @@ export const ComicDetailPage = () => {
         onClose={() => setIsShareModalOpen(false)}
         comic={comic}
       />
+
+      {/* Quick Progress Return Modal (Trik 1: Muncul saat kembali dari tab bacaan) */}
+      <QuickProgressModal
+        isOpen={showQuickReturnModal}
+        onClose={() => setShowQuickReturnModal(false)}
+        comic={comic}
+        currentChapter={trackerItem?.current_chapter || 0}
+        onSaveProgress={handleQuickSaveProgress}
+      />
+
+      {/* Toast Notifikasi Berhasil */}
+      {toastMessage && (
+        <div className="fixed bottom-20 sm:bottom-8 left-1/2 -translate-x-1/2 z-50 bg-manhwa-text text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-elevated flex items-center gap-2 animate-fadeIn border border-manhwa-border">
+          <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   );
 };
