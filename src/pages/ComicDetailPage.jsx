@@ -14,7 +14,9 @@ import {
   AlertCircle,
   Share2,
   WifiOff,
-  Play
+  Play,
+  LogIn,
+  UserPlus
 } from 'lucide-react';
 import { comicService } from '../services/comicService';
 import { trackerService } from '../services/trackerService';
@@ -48,8 +50,9 @@ export const ComicDetailPage = () => {
   const [trackerError, setTrackerError] = useState(null);
   const [chapterError, setChapterError] = useState(null);
 
-  // Share modal state
+  // Share modal & login prompt modal state
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isAuthPromptModalOpen, setIsAuthPromptModalOpen] = useState(false);
 
   // Quick return detection modal state (Trik 1)
   const [showQuickReturnModal, setShowQuickReturnModal] = useState(false);
@@ -75,21 +78,13 @@ export const ComicDetailPage = () => {
         if (cancelled) return;
         setComic(data);
 
-        // Jika terautentikasi, periksa apakah komik ini sudah ada di tracker pengguna
+        // Hanya muat progres tracker jika pengguna sudah login
         if (isAuthenticated) {
           const tracked = await trackerService.checkComicStatus(id);
           if (!cancelled && tracked) {
             setTrackerItem(tracked);
             setTrackedChapter(tracked.current_chapter || 0);
             setTrackedStatus(tracked.reading_status || 'Sedang Dibaca');
-          }
-        } else {
-          // Cek di penyimpanan tracker offline jika belum login
-          const localTracked = await offlineStorage.checkComicInTracker(id);
-          if (!cancelled && localTracked) {
-            setTrackerItem(localTracked);
-            setTrackedChapter(localTracked.current_chapter || 0);
-            setTrackedStatus(localTracked.reading_status || 'Sedang Dibaca');
           }
         }
       } catch (err) {
@@ -146,9 +141,9 @@ export const ComicDetailPage = () => {
     };
   }, [id]);
 
-  // Pre-resolve tautan Shinigami (s1.shinigami.mx) setelah progres tracker diketahui
+  // Pre-resolve tautan Shinigami (s1.shinigami.mx) setelah pengguna login dan progres tracker diketahui
   useEffect(() => {
-    if (!comic || !trackerLoaded || !isOnline) return;
+    if (!comic || !trackerLoaded || !isOnline || !isAuthenticated) return;
     let cancelled = false;
     const currentCh = trackerItem?.current_chapter > 0 ? Number(trackerItem.current_chapter) : 0;
 
@@ -169,7 +164,7 @@ export const ComicDetailPage = () => {
     return () => {
       cancelled = true;
     };
-  }, [id, comic?.id, trackerLoaded, trackerItem?.current_chapter, isOnline]);
+  }, [id, comic?.id, trackerLoaded, trackerItem?.current_chapter, isOnline, isAuthenticated]);
 
   // Fallback URL sinkron ke Shinigami (s1.shinigami.mx) jika resolver belum selesai atau mode offline
   const getFallbackShinigamiUrl = (comicData) => {
@@ -217,6 +212,11 @@ export const ComicDetailPage = () => {
   // Handler saat tombol "Baca" / "Lanjutkan" ditekan
   const handleStartReading = async () => {
     if (!comic) return;
+
+    if (!isAuthenticated) {
+      setIsAuthPromptModalOpen(true);
+      return;
+    }
 
     if (!isOnline) {
       setToastMessage('Anda sedang offline. Hubungkan internet untuk membaca chapter di s1.shinigami.mx.');
@@ -737,6 +737,65 @@ export const ComicDetailPage = () => {
         currentChapter={trackerItem?.current_chapter || 0}
         onSaveProgress={handleQuickSaveProgress}
       />
+
+      {/* Modal Ajakan Masuk Saat Belum Login Menekan Tombol Baca */}
+      <Modal
+        isOpen={isAuthPromptModalOpen}
+        onClose={() => setIsAuthPromptModalOpen(false)}
+        title="Mau Baca Komik?"
+        maxWidth="max-w-sm"
+      >
+        <div className="text-center space-y-4">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-manhwa-accent/15 text-manhwa-accent flex items-center justify-center border border-manhwa-accent/25 shadow-xs">
+            <BookOpen className="w-7 h-7" />
+          </div>
+
+          <div className="space-y-1.5">
+            <h3 className="font-serif font-bold text-lg text-manhwa-text">
+              Mau baca komik, yuk masuk duluu!
+            </h3>
+            <p className="text-xs md:text-sm text-manhwa-muted leading-relaxed">
+              Login sebentar yuk biar bisa langsung baca{' '}
+              <span className="font-semibold text-manhwa-text">{comic.title}</span>{' '}
+              dan progres chapter terakhirmu otomatis tersimpan!
+            </p>
+          </div>
+
+          <div className="space-y-2.5 pt-1">
+            <button
+              type="button"
+              onClick={() => {
+                setIsAuthPromptModalOpen(false);
+                navigate('/login', { state: { from: location } });
+              }}
+              className="w-full py-2.5 px-4 rounded-xl bg-manhwa-accent text-white font-semibold text-xs md:text-sm hover:bg-manhwa-accent-hover transition-smooth shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Yuk, Masuk Sekarang!</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setIsAuthPromptModalOpen(false);
+                navigate('/register', { state: { from: location } });
+              }}
+              className="w-full py-2.5 px-4 rounded-xl bg-manhwa-surface text-manhwa-text hover:bg-manhwa-highlight border border-manhwa-border font-semibold text-xs md:text-sm transition-smooth flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <UserPlus className="w-4 h-4 text-manhwa-accent" />
+              <span>Belum Punya Akun? Daftar Dulu</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsAuthPromptModalOpen(false)}
+              className="w-full py-1.5 text-xs font-medium text-manhwa-muted hover:text-manhwa-text transition-smooth cursor-pointer"
+            >
+              Lihat-lihat Komik Dulu Aja
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Toast Notifikasi Berhasil */}
       {toastMessage && (

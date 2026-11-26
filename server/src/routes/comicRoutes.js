@@ -8,9 +8,12 @@ const router = Router();
 router.get('/trash', verifyToken, requireAdmin, comicController.getTrash);
 router.post('/:id/restore', verifyToken, requireAdmin, comicController.restore);
 
-// Endpoint publik
+// Endpoint publik (katalog & detail komik dapat dilihat tanpa login)
 router.get('/', comicController.getAll);
-router.get('/:id/read-link', comicController.getReadLink);
+
+// Endpoint baca komik membutuhkan pengguna sudah login
+router.get('/:id/read-link', verifyToken, comicController.getReadLink);
+
 router.get('/:id', comicController.getById);
 
 // Endpoint manajemen khusus Admin

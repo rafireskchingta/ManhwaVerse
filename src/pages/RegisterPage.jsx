@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { UserPlus, User, Mail, Lock, BookOpen, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 export const RegisterPage = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -38,7 +40,7 @@ export const RegisterPage = () => {
     try {
       setLoading(true);
       await register(name, email, password);
-      navigate('/');
+      navigate(from === '/register' || from === '/login' ? '/' : from, { replace: true });
     } catch (err) {
       setError(err.message || 'Gagal mendaftarkan akun. Silakan coba kembali.');
     } finally {
@@ -171,7 +173,11 @@ export const RegisterPage = () => {
         {/* Link to Login */}
         <div className="mt-5 text-center text-sm text-manhwa-muted">
           Sudah memiliki akun?{' '}
-          <Link to="/login" className="text-manhwa-accent font-semibold hover:underline">
+          <Link
+            to="/login"
+            state={{ from: location.state?.from }}
+            className="text-manhwa-accent font-semibold hover:underline"
+          >
             Masuk di sini
           </Link>
         </div>
