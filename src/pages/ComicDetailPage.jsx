@@ -55,19 +55,30 @@ export const ComicDetailPage = () => {
   const [showQuickReturnModal, setShowQuickReturnModal] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
   const [resolvedReadLink, setResolvedReadLink] = useState(null);
+  const [trackerLoaded, setTrackerLoaded] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchComicDetail = async () => {
       try {
         setLoading(true);
         setError(null);
+        setImageError(false);
+        setResolvedReadLink(null);
+        setTrackerItem(null);
+        setTrackedChapter(0);
+        setTrackedStatus('Sedang Dibaca');
+        setTrackerLoaded(false);
+
         const data = await comicService.getById(id);
+        if (cancelled) return;
         setComic(data);
 
         // Jika terautentikasi, periksa apakah komik ini sudah ada di tracker pengguna
         if (isAuthenticated) {
           const tracked = await trackerService.checkComicStatus(id);
-          if (tracked) {
+          if (!cancelled && tracked) {
             setTrackerItem(tracked);
             setTrackedChapter(tracked.current_chapter || 0);
             setTrackedStatus(tracked.reading_status || 'Sedang Dibaca');
@@ -75,13 +86,14 @@ export const ComicDetailPage = () => {
         } else {
           // Cek di penyimpanan tracker offline jika belum login
           const localTracked = await offlineStorage.checkComicInTracker(id);
-          if (localTracked) {
+          if (!cancelled && localTracked) {
             setTrackerItem(localTracked);
             setTrackedChapter(localTracked.current_chapter || 0);
             setTrackedStatus(localTracked.reading_status || 'Sedang Dibaca');
           }
         }
       } catch (err) {
+        if (cancelled) return;
         console.error('Error saat memuat detail komik:', err);
         setError(
           isOnline
@@ -89,11 +101,17 @@ export const ComicDetailPage = () => {
             : 'Komik ini belum tersimpan di cache offline perangkat Anda. Silakan hubungkan perangkat ke internet untuk membukanya pertama kali.'
         );
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setTrackerLoaded(true);
+          setLoading(false);
+        }
       }
     };
 
     fetchComicDetail();
+    return () => {
+      cancelled = true;
+    };
   }, [id, isAuthenticated, isOnline]);
 
   // Listener Deteksi Kembali ke Tab Aplikasi (Trik 1: Tab Return Detection)
@@ -128,75 +146,85 @@ export const ComicDetailPage = () => {
     };
   }, [id]);
 
-  // Pre-resolve tautan Komiku.org untuk komik & chapter saat ini (agar popup tidak diblokir browser)
+  // Pre-resolve tautan Shinigami (s1.shinigami.mx) setelah progres tracker diketahui
   useEffect(() => {
-    if (!comic || !isOnline) return;
+    if (!comic || !trackerLoaded || !isOnline) return;
     let cancelled = false;
-    const currentCh = trackerItem?.current_chapter || 0;
+    const currentCh = trackerItem?.current_chapter > 0 ? Number(trackerItem.current_chapter) : 0;
+
+    setResolvedReadLink((prev) =>
+      prev && prev._comicId === id && prev._requestedCh === currentCh ? prev : null
+    );
 
     comicService.getReadLink(id, currentCh).then((linkData) => {
       if (!cancelled && linkData) {
-        setResolvedReadLink(linkData);
+        setResolvedReadLink({
+          ...linkData,
+          _comicId: id,
+          _requestedCh: currentCh
+        });
       }
     });
 
     return () => {
       cancelled = true;
     };
-  }, [id, comic?.id, trackerItem?.current_chapter, isOnline]);
+  }, [id, comic?.id, trackerLoaded, trackerItem?.current_chapter, isOnline]);
 
-  // Fallback URL sinkron ke Komiku.org jika resolver belum selesai atau mode offline
-  const getFallbackKomikuUrl = (comicData) => {
-    if (!comicData) return 'https://komiku.org/';
-    const slugMap = {
-      "omniscient reader's viewpoint": 'https://komiku.org/manga/omniscient-readers-viewpoint/',
-      'omniscient readers viewpoint': 'https://komiku.org/manga/omniscient-readers-viewpoint/',
-      'solo leveling': 'https://komiku.org/manga/solo-leveling-id/',
-      'the beginning after the end': 'https://komiku.org/manga/the-beginning-after-the-end/',
-      'the world’s best engineer': 'https://komiku.org/manga/the-worlds-best-engineer/',
-      "the world's best engineer": 'https://komiku.org/manga/the-worlds-best-engineer/',
-      'the greatest estate developer': 'https://komiku.org/manga/the-worlds-best-engineer/',
-      'return of the flowery mountain sect': 'https://komiku.org/manga/return-of-the-flowery-mountain-sect/',
-      'return of the mount hua sect': 'https://komiku.org/manga/return-of-the-flowery-mountain-sect/',
-      'mercenary enrollment': 'https://komiku.org/manga/mercenary-enrollment/',
-      'nano machine': 'https://komiku.org/manga/nano-machine/',
-      'lookism': 'https://komiku.org/manga/lookism/',
-      'pick me up': 'https://komiku.org/manga/pick-me-up/',
-      'sss-class suicide hunter': 'https://komiku.org/manga/sss-class-suicide-hunter/',
-      'overgeared new': 'https://komiku.org/manga/overgeared-new/',
-      'one piece': 'https://komiku.org/manga/komik-one-piece-indo/',
-      'one punch man': 'https://komiku.org/manga/manga-one-punch-man/',
-      'jujutsu kaisen': 'https://komiku.org/manga/jujutsu-kaisen-indo/',
-      'blue lock': 'https://komiku.org/manga/blue-lock/',
-      'kimetsu no yaiba': 'https://komiku.org/manga/kimetsu-no-yaiba-indonesia/',
-      'chainsaw man': 'https://komiku.org/manga/123213-chainsaw-man/',
-      'the time-limited villainess who makes medicine': 'https://komiku.org/manga/the-time-limited-villainess-who-makes-medicine/',
-      'i’m a contract stepmother, but the tyrant is way too overprotective': 'https://komiku.org/manga/im-a-contract-stepmother-but-the-tyrant-is-way-too-overprotective/',
-      "i'm a contract stepmother, but the tyrant is way too overprotective": 'https://komiku.org/manga/im-a-contract-stepmother-but-the-tyrant-is-way-too-overprotective/',
-      'the boxer': 'https://komiku.org/manga/the-boxer/',
-      'i’ll be a villain in this life': 'https://komiku.org/manga/ill-be-a-villain-in-this-life/',
-      "i'll be a villain in this life": 'https://komiku.org/manga/ill-be-a-villain-in-this-life/',
-      'absolute sword sense': 'https://komiku.org/manga/absolute-sword-sense/'
+  // Fallback URL sinkron ke Shinigami (s1.shinigami.mx) jika resolver belum selesai atau mode offline
+  const getFallbackShinigamiUrl = (comicData) => {
+    if (!comicData) return 'https://s1.shinigami.mx/';
+    if (comicData.source_id) {
+      return `https://s1.shinigami.mx/series/${comicData.source_id}`;
+    }
+    const seriesIdMap = {
+      "omniscient reader's viewpoint": '799eb33b-c086-47a6-b4e0-4516cb87bc77',
+      'omniscient readers viewpoint': '799eb33b-c086-47a6-b4e0-4516cb87bc77',
+      "the villainess's blind date is too perfect": '9cc7ecb6-b11b-4dea-8bdb-5901599fb5cd',
+      'the beginning after the end': 'caf1c938-7512-4850-9b60-9c15f9dca173',
+      "i'm a contract stepmother, but the tyrant is way too overprotective": '8ffc9e44-5211-4057-b92c-9d7040633a2e',
+      'the return of the crazy demon': '4751525f-359c-423a-9fdb-44d40ac8105d',
+      'return of the mad demon': '4751525f-359c-423a-9fdb-44d40ac8105d',
+      'revenge of the iron-blooded sword hound': '703f6c7a-ad78-4d50-b5cc-c768c0a12fdb',
+      'solo leveling': '5c612573-fe38-42df-8618-dc3de1c9d04a',
+      'the greatest estate developer': '6193d77a-1470-4365-9663-33027409325f',
+      "the world's best engineer": '6193d77a-1470-4365-9663-33027409325f',
+      'eleceed': '05bbcbc4-56a6-47e6-ac36-1d482339a322',
+      'mercenary enrollment': 'b80f7a1a-d572-417b-a5e0-9ac6097bf0be',
+      'nano machine': 'd3b05787-4c8e-42bb-ba9a-6b2fafd92f3c',
+      'lookism': 'a1529ab1-5e71-43d6-bb77-754cb6338b67',
+      'pick me up': 'f96af365-8bf3-4b23-ab53-7bb6994a375d',
+      'sss-class suicide hunter': '73a836fe-373e-4645-a5d9-a517922be4d3',
+      "swordmaster's youngest son": 'f70af567-5f45-4859-8222-e41eb10ac169',
+      'one piece': '48270276-bd79-4a46-b15e-fdd2cf5655b1',
+      'one punch man': 'b112f871-7ea4-4adb-a311-711ae31a1e1f',
+      'jujutsu kaisen': 'b06a5d18-a991-4867-8af8-eae43a9312ba',
+      'blue lock': 'cd36aacc-23a5-4900-a362-841647151da7',
+      'tower of god': '911071c9-4c37-444d-bcda-dc605c6f67a8',
+      'chainsaw man': '3b1eab91-4a88-4d5c-babe-f9cf40be1347',
+      'demonic emperor': 'c0f1d049-ff7f-474d-8c6a-3a55e4c44147'
     };
-    const key = (comicData.title || '').trim().toLowerCase();
-    return (
-      slugMap[key] ||
-      `https://komiku.org/?post_type=manga&s=${encodeURIComponent((comicData.title || '').trim())}`
-    );
+    const key = (comicData.title || '')
+      .replace(/[’‘]/g, "'")
+      .trim()
+      .toLowerCase();
+    const seriesId = seriesIdMap[key];
+    return seriesId
+      ? `https://s1.shinigami.mx/series/${seriesId}`
+      : `https://s1.shinigami.mx/series?q=${encodeURIComponent((comicData.title || '').trim())}`;
   };
 
   // Handler saat tombol "Baca" / "Lanjutkan" ditekan
-  const handleStartReading = () => {
+  const handleStartReading = async () => {
     if (!comic) return;
 
     if (!isOnline) {
-      setToastMessage('Anda sedang offline. Hubungkan internet untuk membaca chapter di Komiku.org.');
+      setToastMessage('Anda sedang offline. Hubungkan internet untuk membaca chapter di s1.shinigami.mx.');
       setTimeout(() => setToastMessage(null), 4000);
       return;
     }
 
-    const currentCh = trackerItem?.current_chapter || 0;
-    const targetUrl = resolvedReadLink?.readUrl || getFallbackKomikuUrl(comic);
+    const currentCh = trackerItem?.current_chapter > 0 ? Number(trackerItem.current_chapter) : 0;
 
     // Simpan penanda sesi bahwa pengguna sedang membaca komik ini
     try {
@@ -213,8 +241,39 @@ export const ComicDetailPage = () => {
       console.warn('Gagal menyimpan sesi baca:', e);
     }
 
-    // Buka tab Komiku.org langsung ke chapter yang dituju
-    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    const isMatchedLink =
+      resolvedReadLink &&
+      resolvedReadLink._comicId === id &&
+      resolvedReadLink._requestedCh === currentCh &&
+      resolvedReadLink.readUrl;
+
+    if (isMatchedLink) {
+      // Buka tab s1.shinigami.mx langsung ke chapter pertama / progres user
+      window.open(resolvedReadLink.readUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    // Jika tautan belum selesai di-resolve saat user mengklik cepat, buka tab dulu agar tidak diblokir popup blocker
+    const readerTab = window.open('about:blank', '_blank');
+    if (readerTab) {
+      readerTab.opener = null;
+    }
+
+    const freshLink = await comicService.getReadLink(id, currentCh);
+    if (freshLink) {
+      setResolvedReadLink({
+        ...freshLink,
+        _comicId: id,
+        _requestedCh: currentCh
+      });
+    }
+
+    const targetUrl = freshLink?.readUrl || getFallbackShinigamiUrl(comic);
+    if (readerTab && !readerTab.closed) {
+      readerTab.location.replace(targetUrl);
+    } else {
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   // Simpan progres cepat dari modal kepulangan (Quick Return Modal)

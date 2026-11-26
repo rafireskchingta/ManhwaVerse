@@ -34,7 +34,7 @@
           if ('caches' in window) {
             caches.keys().then((keys) => {
               keys.forEach((key) => {
-                if (!key.endsWith('v1.3.0')) {
+                if (!key.endsWith('v1.5.0')) {
                   caches.delete(key);
                 }
               });

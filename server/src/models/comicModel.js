@@ -4,349 +4,382 @@ import { supabaseAdmin, isSupabaseConfigured } from '../config/supabase.js';
 let fallbackComics = [
   {
     id: '11111111-1111-1111-1111-111111111101',
-    title: "Omniscient Reader's Viewpoint",
-    alternative_title: 'Sudut Pandang Pembaca Serba Tahu',
-    synopsis: 'Kim Dokja adalah pekerja kantoran biasa yang menjadi satu-satunya pembaca novel web apokaliptik selama 10 tahun. Saat chapter terakhir novel tersebut dirilis, dunia tiba-tiba berubah persis seperti skenario novel fiksi tersebut. Hanya Dokja yang mengetahui akhir dari kehancuran dunia ini.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/omniscient-readers-viewpoint/manga_thumbnail-Komik-Omniscient-Readers-Viewpoint.jpg?w=500',
-    author: 'Sing Shong, Sleepy-C',
+    title: 'Omniscient Reader’s Viewpoint',
+    alternative_title: 'Prespektif Pembaca Mahatahu / 전지적 독자 시점',
+    synopsis: 'Kim Dokja adalah pekerja kantoran biasa yang minat satusatunya adalah membaca novel web favoritnya Tiga Cara untuk Bertahan dari Kiamat Tetapi ketika novel itu tibatiba menjadi kenyataan dia adalah satusatunya orang yang tahu bagaimana dunia akan berakhir Berbekal hal tersebut Dokja menggunakan pemahamannya untuk mengubah jalannya cerita dan dunia seperti yang dia tahu',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/93e85535-1327-49ed-8acd-afaaf4a18978.jpg',
+    author: 'Sing N Song, Redice Studio, UMI',
     status: 'Ongoing',
     total_chapters: 317,
-    created_at: new Date('2024-01-01').toISOString(),
+    deleted_at: null,
+    created_at: '2024-01-01T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
+      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
+      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' },
       { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
-      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' }
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111102',
-    title: 'The Time-Limited Villainess Who Makes Medicine',
-    alternative_title: 'Villainess Pembuat Obat',
-    synopsis: 'Seorang perempuan tiba-tiba terbangun dalam tubuh tokoh antagonis di sebuah novel. Ia mengetahui bahwa hidupnya tidak akan berlangsung lama, sementara akhir cerita telah menetapkannya sebagai penjahat yang dibenci semua orang. Berbekal pengetahuan tentang pengobatan dan kemampuan meracik obat, ia memutuskan untuk mengubah nasibnya sebelum waktu yang tersisa habis.',
-    cover_url: 'https://thumbnail.komiku.org/new/img/images/2026/11/24/20261124221519_38508ca8ab4d7447_9b7c3d33.webp?w=500',
-    author: 'Komiku',
+    title: 'The Villainess’s Blind Date Is Too Perfect',
+    alternative_title: '악녀의 맞선남이 너무 완벽하다 / Der perfekte Verlobungskandidat für die Bösewichtin',
+    synopsis: 'Aku masuk ke novel fantasi romansa yang sering kubaca dan menjadi tokoh antagonis, Yvonne Argentrose yang cintanya pada putra mahkota tidak terbalaskan. Ayah dan kakakku takut melihat aku berubah jadi baik dan penurut sampai akhirnya menjodohkanku dengan duke tampan dari utara. Tapi, di awal pertemuan kami, aku meminjam banyak uang padanya karena tubuh penyihir yang kumasuki mengalami amnesia sihir. Aku akan melakukan semua hal agar bisa memperbaiki kondisi tubuhku dan menjadi baik!',
+    cover_url: 'https://cdn.shinigami.gg/assets/cover/banner_1784711567308_abkhs6.jpg',
+    author: 'Chae Jooah',
     status: 'Ongoing',
-    total_chapters: 6,
-    created_at: new Date('2024-01-02').toISOString(),
+    total_chapters: 150,
+    deleted_at: null,
+    created_at: '2024-01-02T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000001', name: 'Historical' },
       { id: '00000000-0000-0000-0000-000000000004', name: 'Romance' },
       { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111103',
-    title: 'The Beginning After the End',
-    alternative_title: 'Awal Dari Akhir / TBATE',
-    synopsis: 'Raja Grey memiliki kekuatan, kekayaan, dan prestise yang tak tertandingi di dunia militer, namun kesepian menyelimutinya. Bereinkarnasi di dunia sihir dan monster yang asing sebagai Arthur Leywin, ia memiliki kesempatan kedua untuk melindungi orang-orang yang dicintainya dan menebus kesalahan masa lalunya.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/the-beginning-after-the-end/manga_thumbnail-Manhwa-The-Beginning-After-The-End-1.jpg?w=500',
-    author: 'TurtleMe, Fuyuki23',
+    title: 'The Beginning After The End',
+    alternative_title: 'TBATE, 끝이 아닌 시작 / The Beginning After the End',
+    synopsis: 'Raja Gray memiliki kekuatan kekayaan dan prestise yang tak tertandingi di dunia yang diatur oleh kemampuan bela diri Namun kesendirian tetap ada di belakang mereka yang memiliki kekuatan besar Di bawah eksterior glamor seorang raja yang kuat mengintai cangkang manusia tanpa tujuan dan kemauan Bereinkarnasi ke dunia baru yang penuh dengan sihir dan monster raja memiliki kesempatan kedua untuk menghidupkan kembali hidupnya Namun memperbaiki kesalahan masa lalunya tidak akan menjadi satusatunya tantangannya Di bawah kedamaian dan kemakmuran dunia baru adalah arus bawah yang mengancam untuk menghancurkan semua yang telah dia kerjakan mempertanyakan peran dan alasannya untuk dilahirkan kembali',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/4e96144f-2f24-4fac-b3dc-035bf5625fe1.jpg',
+    author: 'TurtleMe',
     status: 'Ongoing',
-    total_chapters: 259,
-    created_at: new Date('2024-01-03').toISOString(),
+    total_chapters: 258,
+    deleted_at: null,
+    created_at: '2024-01-03T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
+      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' },
+      { id: '00000000-0000-0000-0000-000000000004', name: 'Romance' },
       { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
-      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' }
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111104',
     title: 'I’m a Contract Stepmother, but the Tyrant Is Way Too Overprotective',
-    alternative_title: 'Ibu Tiri Kontrak Kaisar Tiran',
-    synopsis: 'Seorang wanita modern terlempar ke dunia aristokrat dan menerima tawaran pernikahan kontrak dengan kaisar yang dijuluki tiran. Target utamanya sederhana: menjadi ibu tiri yang baik, jaga jarak, lalu pamit setelah masa kontrak berakhir. Namun sang kaisar tiran justru menunjukkan proteksi berlebihan di tengah tajamnya intrik politik istana.',
-    cover_url: 'https://thumbnail.komiku.org/new/img/images/2026/07/21/20260721174513_eb6f6b3b177f21e6_5b13d7f6.jpg?w=500',
-    author: 'Komiku',
+    alternative_title: "계약 계모인데, 폭군이 너무 과보호해요 / I'm a Contract Stepmother, but the Tyrant Is Way Too Overprotective",
+    synopsis: 'Saya membuka mata saya dan menemukan diri saya di tubuh pengantin massa, karakter sampingan tanpa nama yang ditakdirkan untuk mati pada malam pernikahannya di tangan tiran kejam Kekaisaran, Kaisar Nathan. Untuk menghindari nasib tragis itu, saya memutuskan untuk menghindari masalah dan hidup dengan tenang sebagai figuran latar belakang. Tetapi untuk beberapa alasan, Nathan tiba-tiba tertarik pada saya, dan sebelum saya menyadarinya, kami sudah menikah! Saya pikir semuanya sudah berakhir untuk saya … sampai aku menemukan rahasia terbesar Kaisar, yang menjamin keselamatanku alih-alih kematianku. Sekarang setelah saya aman, saya akhirnya bisa melakukan apa yang benar-benar saya sukai: menghujani putri tiri saya yang menggemaskan (dan karakter favorit mutlak) dengan semua cinta yang pantas dia dapatkan! Itulah rencananya. Kecuali… entah bagaimana, yang disebut tiran yang malah memanjakanku?! Fantasi yang berdebar tentang keluarga, fandom, dan cinta tak terduga dimulai!',
+    cover_url: 'https://cdn.shinigami.gg/assets/cover/banner_1785860545719_1j2eld.jpg',
+    author: 'Tsuruko.',
     status: 'Ongoing',
     total_chapters: 60,
-    created_at: new Date('2024-01-04').toISOString(),
+    deleted_at: null,
+    created_at: '2024-01-04T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000001', name: 'Historical' },
       { id: '00000000-0000-0000-0000-000000000004', name: 'Romance' },
-      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' }
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111105',
-    title: 'The Boxer',
-    alternative_title: 'Sang Petinju',
-    synopsis: 'Yoon Jiho (Yu) adalah pemuda dengan refleks dan bakat tinju luar biasa namun memiliki kepribadian dingin dan hampa akibat masa lalu kelam. Di bawah pelatihan pelatih legendaris K, ia menapaki ring tinju menghadapi berbagai juara dunia demi menemukan makna kehidupan dan kemanusiaan.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/the-boxer/manga_thumbnail-Manhwa-The-Boxer.jpg?w=500',
-    author: 'JH',
-    status: 'Completed',
-    total_chapters: 104,
-    created_at: new Date('2024-01-05').toISOString(),
+    title: 'The Return Of the Crazy Demon',
+    alternative_title: '광마회귀 , Return of The Mad Demon / Return of the Mad Demon',
+    synopsis: 'Yi Zaha Crazy Demon yang tergilagila pada seni bela diri Saat dia melarikan diri setelah mencuri Heavenly Pearl dari Lord Kultus Demonic dia jatuh dari tebing Setelah berpikir bahwa semuanya sudah berakhir dia membuka matanya untuk melihat bahwa dia telah kembali ke saat dia menjadi Servant Dan dia dipukuli karena sesuatu yang tidak dia lakukan Crazy Demon yang kembali ke awal hariharinya sebagai Servant',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/7448838a-7456-450a-bd9e-248097e92cea.jpg',
+    author: 'JP, Yu Jin Sung',
+    status: 'Ongoing',
+    total_chapters: 221,
+    deleted_at: null,
+    created_at: '2024-01-05T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' }
+      { id: '00000000-0000-0000-0000-000000000001', name: 'Historical' },
+      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
+      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' },
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111106',
-    title: 'I’ll Be a Villain in This Life',
-    alternative_title: 'Menjadi Penjahat di Kehidupan Ini',
-    synopsis: 'Terlahir kembali di dunia penuh intrik dan perebutan kekuasaan, sang tokoh utama bertekad mengambil peran sebagai penjahat demi mengubah takdirnya. Dengan strategi tajam dan pengalaman masa lalu, ia bertahan dari pengkhianatan demi merebut kendali hidupnya.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/ill-be-a-villain-in-this-life/manga_thumbnail-Head-Ill-Be-a-Villain-in-This-Life.jpeg?w=500',
-    author: 'Jina Pak',
+    title: 'Revenge Of The Iron-Blooded Sword Hound',
+    alternative_title: '철혈검가 사냥개의 회귀 / Cheolhyeolgeomga Sanyanggaeui Hoegwi',
+    synopsis: 'Anjing pemburu dari keluarga Baskerville Dia dicap sebagai seorang pengkhianat dan dieksekusi lau dia ditinggalkan di saat terakhirnya Sekarang dia sudah kembali ke 40 tahun yang lalu Sekarang mereka akan menjadi mangsaku dan aku akan menggigit mereka semua sampai mati',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/d96303ba-bada-4003-aba8-08192706a941.jpg',
+    author: 'Step on a lego, Seol Arang, Legobalbasseo',
     status: 'Ongoing',
-    total_chapters: 50,
-    created_at: new Date('2024-01-06').toISOString(),
+    total_chapters: 190,
+    deleted_at: null,
+    created_at: '2024-01-06T00:00:00.000Z',
     genres: [
       { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
       { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' },
       { id: '00000000-0000-0000-0000-000000000004', name: 'Romance' },
-      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' }
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111107',
     title: 'Solo Leveling',
-    alternative_title: 'Naik Level Sendiri / Only I Level Up',
-    synopsis: 'Di dunia di mana para pemburu bertarung melawan makhluk dari dunia lain melalui portal misterius, Sung Jinwoo adalah pemburu dengan kekuatan yang sangat lemah. Namun, semuanya berubah ketika ia mendapatkan kemampuan khusus dari Sistem yang memungkinkannya untuk naik level secara mandiri dan menjadi semakin kuat tanpa batas.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/solo-leveling-sub-indo/manga_thumbnail-Head-I-Alone-Leveling.png?w=500',
-    author: 'Chugong, DUBU',
-    status: 'Completed',
-    total_chapters: 180,
-    created_at: new Date('2024-01-07').toISOString(),
+    alternative_title: 'Na Honjaman Level-Up, Only I Level Up, Ore Dake Level Up na Ken, Тільки я візьму новий рівень, تکرو, 俺だけレベルアップな件, 我独自升级, 나 혼자만 레벨업 / Na Honjaman Level-Up',
+    synopsis: 'Manhwa Solo Leveling yang dibuat oleh komikus bernama Chugong ini bercerita tentang 10 tahun yang lalu setelah Gerbang yang menghubungkan dunia nyata dengan dunia monster terbuka beberapa orang biasa setiap hari menerima kekuatan untuk berburu monster di dalam Gerbang Mereka dikenal sebagai Pemburu Namun tidak semua Pemburu kuat Nama saya Sung JinWoo seorang Pemburu peringkatE Saya seseorang yang harus mempertaruhkan nyawanya di ruang bawah tanah paling rendah Terlemah di Dunia Tidak memiliki keterampilan apa pun untuk ditampilkan saya hampir tidak mendapatkan uang yang dibutuhkan dengan bertarung di ruang bawah tanah berlevel rendah Setidaknya sampai saya menemukan ruang bawah tanah tersembunyi dengan kesulitan tersulit dalam ruang bawah tanah peringkatD Pada akhirnya saat aku menerima kematian tibatiba aku menerima kekuatan aneh log pencarian yang hanya bisa kulihat rahasia untuk naik level yang hanya aku yang tahu Jika saya berlatih sesuai dengan pencarian saya dan monster yang diburu level saya akan naik Berubah dari Hunter terlemah menjadi Hunter Srank terkuat',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/09919a8b39cb.jpeg',
+    author: 'h-goon, Chugong, Gi So-Ryeong',
+    status: 'Ongoing',
+    total_chapters: 179,
+    deleted_at: null,
+    created_at: '2024-01-07T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' }
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111108',
-    title: 'The World’s Best Engineer',
-    alternative_title: 'The Greatest Estate Developer / Insinyur Terbaik di Dunia',
-    synopsis: 'Suho Kim, mahasiswa teknik sipil Korea, terbangun di dalam novel fantasi sebagai Lloyd Frontera—bangsawan pemalas dengan wilayah kekuasaan yang terlilit hutang raksasa. Berbekal ilmu teknik sipil modern dan makhluk kontrak sihir, ia membangun infrastruktur megah dan mengubah nasib wilayahnya.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/the-worlds-best-engineer/manga_thumbnail-The-Greatest-Estate-Developer.jpg?w=500',
-    author: 'BK_Moon, Min Jae',
-    status: 'Ongoing',
+    title: 'The Greatest Estate Developer',
+    alternative_title: "The World's Best Engineer, 대급 영지 설계사 / Yeokdaegeum Yeongji Seolgyesa",
+    synopsis: 'Kim SooHo seorang insinyur sipil menjadi bangsawan dari sebuah novel Tapi apa ini Harta saya akan segera dihancurkan Kemudian saya harus mendesain membangun dan menjual',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/1fc811da-99f2-4fe8-9c34-c9d7f12185ec.jpg',
+    author: 'BK_Moon, Mun Baeg Kyeong, Lee Hyunmin',
+    status: 'Completed',
     total_chapters: 222,
-    created_at: new Date('2024-01-08').toISOString(),
+    deleted_at: null,
+    created_at: '2024-01-08T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
+      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' },
       { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
-      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' }
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111109',
-    title: 'Return of the Flowery Mountain Sect',
-    alternative_title: 'Kembalinya Sekte Gunung Mekar / Return of the Mount Hua Sect',
-    synopsis: 'Chung Myung, Tetua Agung Sekte Gunung Hua bergelar Santo Pedang Bunga Plum, terlahir kembali seratus tahun setelah perang besar. Mendapati sektenya kini telah runtuh dan dilupakan, ia bertekad mengembalikan kejayaan Sekte Gunung Mekar ke puncak dunia seni bela diri.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/return-of-the-flowery-mountain-sect/manga_thumbnail-Manhwa-Return-of-the-Flowery-Mountain-Sect.jpg?w=500',
-    author: 'Biga, LICO',
+    title: 'Eleceed',
+    alternative_title: '일렉시드 / Eleceed',
+    synopsis: 'Kaiden Pengguna kemampuan misterius yang bersembunyi di dalam tubuh kucing jalanan Dia kemudian dijemput oleh Jiwoo setelah terluka setelah berkelahi dengan pengguna kemampuan lain Ia memiliki kepribadian yang keras kepala dan suka memerintah Jiwoo anak SMA yang energik dan banyak bicara yang suka kucing Ia sangat baik dan juga tampaknya memiliki kemampuan khusus',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/6c83f3db-948b-426f-a0ad-7074d8118632.jpg',
+    author: 'Son Jae-Ho',
     status: 'Ongoing',
-    total_chapters: 189,
-    created_at: new Date('2024-01-09').toISOString(),
+    total_chapters: 428,
+    deleted_at: null,
+    created_at: '2024-01-09T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000001', name: 'Historical' },
-      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' },
-      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' }
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111110',
     title: 'Mercenary Enrollment',
-    alternative_title: 'Pendaftaran Tentara Bayaran / Teenage Mercenary',
-    synopsis: 'Yu Ijin kembali ke kehidupan sekolah biasa di Korea Selatan setelah menghabiskan masa mudanya sebagai tentara bayaran elit. Ia menggunakan kemampuan tempurnya untuk melindungi kakek, adik perempuannya, serta teman-teman sekolahnya dari berbagai ancaman masa lalu.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/mercenary-enrollment/manga_thumbnail-Manhwa-Mercenary-Enrollment.jpg?w=500',
-    author: 'YC, Rakhyun',
+    alternative_title: 'High School Mercenary, 입학용병 / Iphak Yongbyeong',
+    synopsis: 'Yu Ijin adalah satusatunya yang selamat dari kecelakaan pesawat saat dia masih kecil Setelah menjadi tentara bayaran untuk bertahan hidup selama 10 tahun ia kembali ke keluarganya di kampung halamannya.',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/c668834b4847.jpeg',
+    author: 'YC',
     status: 'Ongoing',
     total_chapters: 280,
-    created_at: new Date('2024-01-10').toISOString(),
+    deleted_at: null,
+    created_at: '2024-01-10T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000004', name: 'Romance' },
-      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' }
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111111',
     title: 'Nano Machine',
-    alternative_title: 'Mesin Nano',
-    synopsis: 'Cheon Yeo-woon, pewaris klan yang diremehkan oleh anggota keluarganya sendiri, mengalami perubahan nasib drastis setelah menerima suntikan teknologi mesin nano canggih dari keturunannya di masa depan demi memulihkan kehormatan dan menguasai kultus iblis.',
-    cover_url: 'https://thumbnail.komiku.org/img/upload/nano_machine/img_693126dac89353.00003505.jpg?w=500',
-    author: 'Hwang Yongjae, Han Joong-Wueol-Ya',
+    alternative_title: '나노마신 / Nano Machine',
+    synopsis: 'Setelah direndahkan dan menghabiskan hidupnya dalam bahaya seorang yatim piatu dari pemuja iblis YeoWoon mendapatkan kunjungan tak terduga dari keturunannya dari masa depan yang memasukkan sebuah mesin nano ke dalam tubuh CheonWoon yang mengubah hidup Cheon Yeo Woon setelah aktivasi Ikuti Cerita tentang perjalanan Cheon YeoWoon di reaperscansid melewati pemujaan setan dan naik menjadi yang ahli beladiri terbaik baru saja dimulai',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/38e34bb8-29c2-43f6-a2cc-ec9d4991ff5a.jpg',
+    author: 'Hanjung Wolya, Great H',
     status: 'Ongoing',
-    total_chapters: 339,
-    created_at: new Date('2024-01-11').toISOString(),
+    total_chapters: 340,
+    deleted_at: null,
+    created_at: '2024-01-11T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
+      { id: '00000000-0000-0000-0000-000000000001', name: 'Historical' },
+      { id: '00000000-0000-0000-0000-000000000004', name: 'Romance' },
       { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
-      { id: '00000000-0000-0000-0000-000000000001', name: 'Historical' }
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111112',
     title: 'Lookism',
-    alternative_title: 'Penampilan',
-    synopsis: 'Park Hyung Suk adalah remaja yang kerap dirundung karena penampilannya. Suatu hari ia terbangun memiliki tubuh kedua yang tampan dan atletis sempurna, lalu menghadapi konflik sosial sekolah, pertarungan geng, hingga misteri di balik kedua tubuhnya.',
-    cover_url: 'https://thumbnail.komiku.org/img/upload/lookism/img_683169399d3869.32259029.jpg?w=500',
-    author: 'Park Tae-jun',
+    alternative_title: 'Updating / Oemo Jisangjuui',
+    synopsis: 'Park Hyungsuk orang yang gendut dan jelek dirundung oleh orangorang di lingkungan sekolahnya setiap hari Namun sebuah keajaiban akan segera terjadi',
+    cover_url: 'https://cdn.shinigami.gg/assets/cover/05e8dbb20620.jpeg',
+    author: 'Park Taejoon',
     status: 'Ongoing',
     total_chapters: 635,
-    created_at: new Date('2024-01-12').toISOString(),
+    deleted_at: null,
+    created_at: '2024-01-12T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' }
+      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111113',
     title: 'Pick Me Up',
-    alternative_title: 'Pick Me Up, Infinite Gacha',
-    synopsis: 'Han Islat, pemain nomor satu di game gacha tingkat kesulitan mustahil, tiba-tiba ditarik masuk ke dalam dunia gamenya sendiri sebagai karakter hero bintang 1 yang harus bertahan hidup menaklukkan lantai menara mematikan.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/pick-me-up/manga_thumbnail-Pick-Me-Up-1.png?w=500',
-    author: 'Hermod, Wasak Basak',
+    alternative_title: 'Pick Me Up, Infinite Gacha, 픽 미 업! / Pick Me Up',
+    synopsis: 'Dalam game gacha yang terkenal dengan kesulitannya yang mengerikan Master peringkat ke5 di dunia Loki kehilangan kesadaran saat menyerbu Dungeon Apa Aku karakter game sekarang Setelah bangun Loki menyadari bahwa dia telah berubah menjadi Pahlawan Level 1 Bintang 1Han Yslat Untuk kembali ke Bumi dia harus memimpin para master dan hero pemula dan membersihkan lantai 100 Dungeon Kau macammacam dengan orang yang salah Ini adalah kisah perjuangan keras Master Loki yang belum pernah mengalami satu kekalahan pun',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/97526c67-93d8-48e2-a287-dfd4f21f9674.jpg',
+    author: 'Redice Studio, Hermod, U-Ne Cho, nicesun',
     status: 'Ongoing',
     total_chapters: 229,
-    created_at: new Date('2024-01-13').toISOString(),
+    deleted_at: null,
+    created_at: '2024-01-13T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' }
+      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
+      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' },
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111114',
     title: 'SSS-Class Suicide Hunter',
-    alternative_title: 'Pemburu Bunuh Diri Kelas SSS',
-    synopsis: 'Kim Gong-ja mendapatkan skill peringkat SSS yang memungkinkannya meniru kekuatan orang yang membunuhnya dan memutar kembali waktu 24 jam ke belakang setiap kali ia mati. Bertekad mengubah nasibnya di Menara, ia memanfaatkan kematian untuk menjadi pemburu terkuat.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/sss-class-suicide-hunter/manga_thumbnail-Manhwa-SSS-Class-Suicide-Hunter.jpg?w=500',
-    author: 'Shin Noah, Bill K',
+    alternative_title: 'SSS급 죽어야 사는 헌터, SSS-Class Hunter that has to Die to Live, SSS-Class Revival Hunter / SSS-geup Jugeoya Saneun Hunter',
+    synopsis: 'Di Menara misterius yang mirip dengan dungeon RPG Kim Gongja menjalani kehidupan duniawi yang membuat iri semua star hunter Suatu hari ketamakannya dikabulkan dengan legendary skill untuk menyalin kemampuan orang lain dengan mengorbankan nyawanya sendiri Sebelum dia sadar dia dibunuh oleh hunter 1 Flame Emperor Tapi hal itu mengaktifkan Skill nya dan kemampuan untuk melakukan perjalanan kembali ke masa lalu setelah kematian Bagaimana Gongja menggunakan keterampilan ini untuk mengalahkan kompetisi dan naik ke puncak',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/0cc1691a-ca1a-462e-95ea-84dc943d9416.jpg',
+    author: 'Neida, Sinnoa',
     status: 'Ongoing',
     total_chapters: 160,
-    created_at: new Date('2024-01-14').toISOString(),
+    deleted_at: null,
+    created_at: '2024-01-14T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
       { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' },
-      { id: '00000000-0000-0000-0000-000000000004', name: 'Romance' }
+      { id: '00000000-0000-0000-0000-000000000004', name: 'Romance' },
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111115',
-    title: 'Overgeared New',
-    alternative_title: 'Kerja Keras Tanpa Henti',
-    synopsis: 'Shin Youngwoo menemukan game realitas virtual Satisfy dan memperoleh kelas tersembunyi pandai besi legendaris Pagma. Memanfaatkan kreativitas dan kerja kerasnya, ia menempa senjata terkuat sekaligus menjadi pemain papan atas.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/overgeared-new/manga_thumbnail-Manhua-Overgeared-New.jpg?w=500',
-    author: 'Park Saenal',
+    title: 'Swordmaster’s Youngest Son',
+    alternative_title: "The Swordmaster's Son; The Youngest Son of a Renowned Family of Swordsmen; 검술명가 막내아들 / The Swordmaster's Son",
+    synopsis: 'Jin Runcandel adalah putra bungsu dari Swordmaster terhebat Setelah dia ditendang keluar dari klan dia mengalami nasib yang tragis Tapi sebelum dia mati seorang Dewa memberinya kesempatan kedua Sekarang dia harus menggunakan kekuatan barunya untuk kebaikan Akankah Jin menjadi Swordmaster terkuat di dunia dan memenuhi potensi terbesarnya',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/9dadcd86-4ee5-4b94-90f3-be19955078a8.jpg',
+    author: 'AZI, Emperor Penguin, HWANGZE PENGUIN',
     status: 'Ongoing',
-    total_chapters: 349,
-    created_at: new Date('2024-01-15').toISOString(),
+    total_chapters: 222,
+    deleted_at: null,
+    created_at: '2024-01-15T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' }
+      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' },
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111116',
     title: 'One Piece',
-    alternative_title: 'One Piece: Harta Karun Legendaris',
-    synopsis: 'One Piece mengikuti petualangan Monkey D. Luffy dan kru Bajak Laut Topi Jerami mengarungi lautan Grand Line demi menemukan harta karun legendaris One Piece dan meraih gelar Raja Bajak Laut.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/komik-one-piece-indo/manga_thumbnail-Komik-One-Piece.jpg?w=500',
-    author: 'Eiichiro Oda',
+    alternative_title: 'Updating / One Piece',
+    synopsis: 'Bercerita tentang seorang lakilaki bernama Monkey D Luffy yang menentang arti dari gelar bajak laut Daripada kesannama besar kejahatan kekerasan dia lebih terlihat seperti bajak laut rendahan yang suka bersenangsenang alasanLuffy menjadi bajak laut adalah tekadnya untuk berpetualang di lautan yang menyenangkan dan bertemu orangorangbaru dan menarik sertabersamasama mencari One Piece',
+    cover_url: 'https://cdn.shinigami.gg/assets/cover/f9325dbc0a80.jpeg',
+    author: 'Oda Eiichirou',
     status: 'Ongoing',
     total_chapters: 1199,
-    created_at: new Date('2024-01-16').toISOString(),
+    deleted_at: null,
+    created_at: '2024-01-16T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' }
+      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111117',
     title: 'One Punch Man',
-    alternative_title: 'Satu Pukulan',
-    synopsis: 'Saitama adalah pahlawan super yang mampu mengalahkan musuh manapun hanya dengan satu pukulan. Merasa bosan karena tak kunjung menemukan lawan sepadan, ia bergabung dengan Asosiasi Pahlawan menghadapi berbagai ancaman monster.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/manga-one-punch-man/manga_thumbnail-Komik-One-Punch-Man.jpg?w=500',
-    author: 'ONE, Yusuke Murata',
+    alternative_title: 'Updating / One Punch-Man',
+    synopsis: 'Saitama dulunya hanyalah lelaki biasa dalam dunia dimana pahlawan menjadi sebuah pekerjaan Tetapi ketika Ia bertemu dengan seorang anak lelaki yang sedang diserang monster dia mengingat citacita masa kecilnya untuk menjadi pahlawan Lalu dia berlatih setiap hari hingga semua rambutnya rontok Saitama pun menjadi pahlawan yang kuat tetapi ada satu hal yang mencemaskan dia Yaitu dia menjadi terlalu kuat hingga dia dapat mengalahkan setiap monster hanya dengan satu tinjuan',
+    cover_url: 'https://cdn.shinigami.gg/assets/cover/c28e5f097294.jpeg',
+    author: 'One',
     status: 'Ongoing',
     total_chapters: 314,
-    created_at: new Date('2024-01-17').toISOString(),
+    deleted_at: null,
+    created_at: '2024-01-17T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' }
+      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111118',
     title: 'Jujutsu Kaisen',
-    alternative_title: 'Kutukan Pemburu',
-    synopsis: 'Yuji Itadori terlibat dalam dunia ilmu kutukan setelah menelan jari terkutuk Raja Kutukan Sukuna. Bersama Megumi dan Nobara di bawah bimbingan Satoru Gojo, ia bertempur melawan roh kutukan berbahaya.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/jujutsu-kaisen-indo/manga_thumbnail-Manhua-Jujutsu-Kaisen.jpg?w=500',
-    author: 'Gege Akutami',
-    status: 'Completed',
+    alternative_title: 'Updating / Jujutsu Kaisen',
+    synopsis: 'Yuuji adalah seorang jenius di jalur dan lapangan Tapi dia memiliki minat nol dia senang sebagai clam di Klub Penelitian Ilmu Ghaib Meskipun Dia di Klub hanya untuk Iseng Halhal menjadi serius ketika semangat nyata muncul di sekolah Hidup akan menjadi sangat aneh Di SMA Negeri Sugisawa 3',
+    cover_url: 'https://cdn.shinigami.gg/assets/cover/80848fdd124c.jpeg',
+    author: 'AKUTAMI Gege',
+    status: 'Ongoing',
     total_chapters: 271,
-    created_at: new Date('2024-01-18').toISOString(),
+    deleted_at: null,
+    created_at: '2024-01-18T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
+      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
       { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
-      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' }
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111119',
     title: 'Blue Lock',
-    alternative_title: 'Penjara Biru',
-    synopsis: 'Setelah kegagalan di Piala Dunia, Jepang meluncurkan fasilitas pelatihan ekstrem Blue Lock untuk mencetak striker paling egois dan mematikan di dunia. Yoichi Isagi berjuang menyingkirkan ratusan rival demi bertahan.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/blue-lock/manga_thumbnail-Manga-Blue-Lock.jpg?w=500',
-    author: 'Muneyuki Kaneshiro',
+    alternative_title: 'Updating / Blue Lock',
+    synopsis: 'Cerita berawal dari persatuan sepak bola jepang yang memulai sebuah program pencarian bakat pemain sepak bola SMA yang mulai berlatih untuk piala dunia 2022 Isagi Youichi seorang pemain penyerang mendapatkan undangan untuk program ini setelah kekalahan timnya dan tidak melaju ke tingkat nasional Pelatih program ini adalah Jinpachi yang mempunyai keinginan menghancurkan sepak bola pecundang jepang dengan memperkenalkan jenis pelatihan baru mengisolasi 300 striker muda di dalam penjara yang disebut Blue Lock dan melatih mereka dengan keras untuk menciptakan stiker egois terhebat di dunia',
+    cover_url: 'https://cdn.shinigami.gg/assets/cover/9848f5698b1f.jpeg',
+    author: 'KANESHIRO Muneyuki',
     status: 'Ongoing',
     total_chapters: 370,
-    created_at: new Date('2024-01-19').toISOString(),
+    deleted_at: null,
+    created_at: '2024-01-19T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' }
+      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111120',
-    title: 'Kimetsu no Yaiba',
-    alternative_title: 'Pembasmi Iblis / Demon Slayer',
-    synopsis: 'Tanjiro Kamado bergabung dengan Korps Pembasmi Iblis setelah keluarganya dibantai iblis dan adiknya Nezuko berubah menjadi iblis. Ia mengembara mencari cara menyembuhkan Nezuko dan memburu Muzan Kibutsuji.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/kimetsu-no-yaiba-indonesia/manga_thumbnail-Komik-Kimetsu-no-Yaiba.jpg?w=500',
-    author: 'Koyoharu Gotouge',
-    status: 'Completed',
-    total_chapters: 205,
-    created_at: new Date('2024-01-20').toISOString(),
+    title: 'Tower Of God',
+    alternative_title: 'Updating / Sinui Tap',
+    synopsis: 'Apa yang kau inginkan Uang dan Kekayaan Kehormatan dan Harga Diri Otoritas dan Kekuatan Balas Dendam atau sesuatu yang melebihi semua itu Apa pun yang kau inginkan tersebutSemuanya ada di sini',
+    cover_url: 'https://cdn.shinigami.gg/assets/cover/5c4da8f0047f.webp',
+    author: 'SIU',
+    status: 'Ongoing',
+    total_chapters: 651,
+    deleted_at: null,
+    created_at: '2024-01-20T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
-      { id: '00000000-0000-0000-0000-000000000001', name: 'Historical' },
-      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' }
+      { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111121',
     title: 'Chainsaw Man',
-    alternative_title: 'Manusia Gergaji Mesin',
-    synopsis: 'Denji, pemuda miskin yang hidup bersama iblis gergaji Pochita, hidup kembali sebagai manusia setengah iblis Chainsaw Man setelah dikhianati yakuza. Ia direkrut oleh Divisi Khusus Pemburu Iblis.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/123213-chainsaw-man/manga_thumbnail-Manga-Chainsaw-Man.jpg?w=500',
-    author: 'Tatsuki Fujimoto',
-    status: 'Completed',
-    total_chapters: 232,
-    created_at: new Date('2024-01-21').toISOString(),
+    alternative_title: 'Chainsaw man! / チェンソーマン',
+    synopsis: 'Biar nama Yang menjelaskan Kehidupan miskin Denji berubah selamanya ketika ia Menyatu dengan dengan anjing Chainsaw peliharaannya Pochita Sekarang dia tinggal di kota besar dan menjadi Devil Hunter resmi Tapi dia harus banyak belajar tentang pekerjaan barunya dan kekuatan sebenarnya dari Chainsaw',
+    cover_url: 'https://cdn.shinigami.gg/assets/cover/5526f3c6c9c7.jpeg',
+    author: 'Fujimoto Tatsuki',
+    status: 'Ongoing',
+    total_chapters: 277,
+    deleted_at: null,
+    created_at: '2024-01-21T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
       { id: '00000000-0000-0000-0000-000000000002', name: 'Thriller' },
-      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' }
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   },
   {
     id: '11111111-1111-1111-1111-111111111122',
-    title: 'Absolute Sword Sense',
-    alternative_title: 'Indra Pedang Mutlak',
-    synopsis: 'So Woon-hwi, mantan mata-mata klan darah yang dikhianati setelah kehilangan energi dalamnya, bereinkarnasi 10 tahun ke masa lalu saat baru diculik. Kali ini ia memperoleh kemampuan misterius untuk mendengar suara para pedang kuno.',
-    cover_url: 'https://thumbnail.komiku.org/uploads/manga/absolute-sword-sense/manga_thumbnail-Manhwa-Absolute-Sword-Sense.jpg?w=500',
-    author: 'Joo-seok Kang',
+    title: 'Demonic Emperor',
+    alternative_title: 'Magic Emperor, 魔皇大管家 / The Servant Is the Demon King?!',
+    synopsis: 'Karena dia memiliki warisan Ancient Demonic emperor Demonic Emperor Zhuo Yifan menemui nasib sial karena dikhianati dan dibunuh oleh murid kepercayaannya Setelah terlahir kembali kultivasinya kembali ke nol dan dia terjebak oleh heart demon tidak diberi pilihan selain menjadi pengurus rumah tangga dari satusatunya nona tertua Keluarga Luo Dari menjadi Demonic Emperor menjadi pengurus rumah tangga yang tidak penting bagaimana dia bisa bergaul dengan eart demon eldest miss dan kekuatan apa yang akan dia peroleh untuk memimpin dirinya sendiri dan keluarga yang menurun untuk bangkit kembali ke puncak benuaaa',
+    cover_url: 'https://cdn.shinigami.gg/assets/image/d00e4253-656d-481e-b3ef-701e4c6d451e.jpg',
+    author: 'Wuer Manhua, Ye Xiao',
     status: 'Ongoing',
-    total_chapters: 211,
-    created_at: new Date('2024-01-22').toISOString(),
+    total_chapters: 939,
+    deleted_at: null,
+    created_at: '2024-01-22T00:00:00.000Z',
     genres: [
-      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' },
       { id: '00000000-0000-0000-0000-000000000001', name: 'Historical' },
-      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' }
+      { id: '00000000-0000-0000-0000-000000000003', name: 'Time Travel' },
+      { id: '00000000-0000-0000-0000-000000000004', name: 'Romance' },
+      { id: '00000000-0000-0000-0000-000000000005', name: 'Fantasy' },
+      { id: '00000000-0000-0000-0000-000000000006', name: 'Action' }
     ]
   }
 ];

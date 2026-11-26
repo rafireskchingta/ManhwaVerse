@@ -1,5 +1,5 @@
 import { comicModel } from '../models/comicModel.js';
-import { komikuService } from '../services/komikuService.js';
+import { shinigamiService } from '../services/shinigamiService.js';
 
 export const comicController = {
   async getAll(req, res, next) {
@@ -58,9 +58,10 @@ export const comicController = {
         });
       }
 
-      const linkInfo = await komikuService.resolveReadLink({
+      const linkInfo = await shinigamiService.resolveReadLink({
         title: comic.title,
         alternative_title: comic.alternative_title,
+        source_id: comic.source_id || '',
         chapter
       });
 

@@ -2,7 +2,7 @@
 // Menyimpan data komik, karakter, genre, dan tracker yang pernah diakses pengguna agar bisa dibuka saat offline.
 
 const DB_NAME = 'manhwaverse_offline_db';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 const STORES = {
   COMICS: 'comics',
@@ -33,13 +33,13 @@ class OfflineStorage {
 
           if (!db.objectStoreNames.contains(STORES.COMICS)) {
             db.createObjectStore(STORES.COMICS, { keyPath: 'id' });
-          } else if (event.oldVersion < 2) {
+          } else if (event.oldVersion < 3) {
             tx.objectStore(STORES.COMICS).clear();
           }
 
           if (!db.objectStoreNames.contains(STORES.CHARACTERS)) {
             db.createObjectStore(STORES.CHARACTERS, { keyPath: 'id' });
-          } else if (event.oldVersion < 2) {
+          } else if (event.oldVersion < 3) {
             tx.objectStore(STORES.CHARACTERS).clear();
           }
 
@@ -49,7 +49,7 @@ class OfflineStorage {
 
           if (!db.objectStoreNames.contains(STORES.COLLECTIONS)) {
             db.createObjectStore(STORES.COLLECTIONS, { keyPath: 'key' });
-          } else if (event.oldVersion < 2) {
+          } else if (event.oldVersion < 3) {
             tx.objectStore(STORES.COLLECTIONS).clear();
           }
         };

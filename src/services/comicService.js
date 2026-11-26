@@ -85,7 +85,7 @@ export const comicService = {
       const res = await api.get(`/comics/${id}/read-link?chapter=${encodeURIComponent(chapter)}`);
       return res.data || null;
     } catch (err) {
-      console.warn('[comicService] Gagal resolve link Komiku:', err.message);
+      console.warn('[comicService] Gagal resolve link Shinigami:', err.message);
       return null;
     }
   },
