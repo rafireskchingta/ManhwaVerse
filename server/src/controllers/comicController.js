@@ -1,5 +1,6 @@
 import { comicModel } from '../models/comicModel.js';
 import { shinigamiService } from '../services/shinigamiService.js';
+import { notificationModel } from '../models/notificationModel.js';
 
 export const comicController = {
   async getAll(req, res, next) {
@@ -105,6 +106,8 @@ export const comicController = {
         genre_ids: Array.isArray(genre_ids) ? genre_ids : []
       });
 
+      await notificationModel.recordComicEvent('new_comic', newComic).catch(() => {});
+
       return res.status(201).json({
         success: true,
         message: 'Komik berhasil ditambahkan.',
@@ -147,6 +150,10 @@ export const comicController = {
         total_chapters: total_chapters !== undefined ? parseInt(total_chapters, 10) : undefined,
         genre_ids
       });
+
+      if (updatedComic && total_chapters !== undefined) {
+        await notificationModel.recordComicEvent('chapter_update', updatedComic).catch(() => {});
+      }
 
       return res.json({
         success: true,

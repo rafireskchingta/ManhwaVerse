@@ -10,6 +10,7 @@ import characterRoutes from './routes/characterRoutes.js';
 import genreRoutes from './routes/genreRoutes.js';
 import trackerRoutes from './routes/trackerRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 import { isSupabaseConfigured } from './config/supabase.js';
 
@@ -51,6 +52,7 @@ const registerRoutes = (prefix = '') => {
   app.use(`${prefix}/genres`, genreRoutes);
   app.use(`${prefix}/tracker`, trackerRoutes);
   app.use(`${prefix}/profiles`, profileRoutes);
+  app.use(`${prefix}/notifications`, notificationRoutes);
 };
 
 registerRoutes('/api');

@@ -359,6 +359,22 @@ class OfflineStorage {
     const list = await this.getTracker();
     return list.find((item) => item.comic_id === comicId || item.comic?.id === comicId) || null;
   }
+
+  // ===================== NOTIFICATIONS =====================
+
+  async saveNotifications(notifications) {
+    if (!Array.isArray(notifications)) return;
+    await this.setItem(STORES.COLLECTIONS, {
+      key: 'notifications_list',
+      data: notifications,
+      cached_at: new Date().toISOString()
+    });
+  }
+
+  async getNotifications() {
+    const collection = await this.getItem(STORES.COLLECTIONS, 'notifications_list');
+    return collection?.data || [];
+  }
 }
 
 export const offlineStorage = new OfflineStorage();

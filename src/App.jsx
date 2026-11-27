@@ -9,6 +9,7 @@ import { CharactersPage } from './pages/CharactersPage';
 import { TrackerPage } from './pages/TrackerPage';
 import { DiscoverPage } from './pages/DiscoverPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { NotificationsPage } from './pages/NotificationsPage';
 import { ComicDetailPage } from './pages/ComicDetailPage';
 import { CharacterDetailPage } from './pages/CharacterDetailPage';
 import { LoginPage } from './pages/LoginPage';
@@ -28,6 +29,7 @@ export function App() {
             <Route path="tracker" element={<TrackerPage />} />
             <Route path="discover" element={<DiscoverPage />} />
             <Route path="profile" element={<ProfilePage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
 
             {/* 2 Halaman Detail */}
             <Route path="comics/:id" element={<ComicDetailPage />} />

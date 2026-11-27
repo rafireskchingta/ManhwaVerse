@@ -1,6 +1,6 @@
-const STATIC_CACHE_NAME = 'manhwaverse-static-v1.6.0';
-const API_CACHE_NAME = 'manhwaverse-api-v1.6.0';
-const IMAGE_CACHE_NAME = 'manhwaverse-images-v1.6.0';
+const STATIC_CACHE_NAME = 'manhwaverse-static-v1.8.0';
+const API_CACHE_NAME = 'manhwaverse-api-v1.8.0';
+const IMAGE_CACHE_NAME = 'manhwaverse-images-v1.8.0';
 
 // Aset inti antarmuka (App Shell) untuk fungsi offline
 const STATIC_ASSETS = [
@@ -16,7 +16,7 @@ const STATIC_ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE_NAME).then((cache) => {
-      console.log('[Service Worker] Pre-caching App Shell v1.6.0');
+      console.log('[Service Worker] Pre-caching App Shell v1.8.0');
       return cache.addAll(STATIC_ASSETS);
     })
   );

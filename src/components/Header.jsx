@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
   BookOpen,
   Users,
@@ -7,14 +7,40 @@ import {
   Compass,
   User,
   ShieldAlert,
-  WifiOff
+  WifiOff,
+  Bell
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useOnlineStatus } from '../hooks/useOnlineStatus';
+import { notificationService, NOTIFICATIONS_EVENT } from '../services/notificationService';
 
 export const Header = () => {
   const { user, isAdmin } = useAuth();
   const isOnline = useOnlineStatus();
+  const location = useLocation();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadUnread = async () => {
+      try {
+        const list = await notificationService.getAll();
+        if (cancelled) return;
+        const readIds = notificationService.getReadIds();
+        setUnreadCount(list.filter((item) => !readIds.has(item.id)).length);
+      } catch {
+        // Abaikan jika gagal memuat badge saat pertama kali offline
+      }
+    };
+
+    loadUnread();
+    window.addEventListener(NOTIFICATIONS_EVENT, loadUnread);
+    return () => {
+      cancelled = true;
+      window.removeEventListener(NOTIFICATIONS_EVENT, loadUnread);
+    };
+  }, [isOnline, location.pathname]);
 
   const navLinks = [
     { to: '/', label: 'Komik', icon: BookOpen, end: true },
@@ -75,13 +101,34 @@ export const Header = () => {
         </nav>
 
         {/* Status & Quick Actions */}
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           {!isOnline && (
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs md:text-sm border border-amber-200">
               <WifiOff className="w-4 h-4" />
               <span className="hidden sm:inline">Offline</span>
             </div>
           )}
+
+          {/* Tombol Lonceng Notifikasi di samping Profil */}
+          <NavLink
+            to="/notifications"
+            className={({ isActive }) =>
+              `relative p-2 rounded-full border transition-smooth ${
+                isActive
+                  ? 'bg-manhwa-accent text-white border-manhwa-accent shadow-xs'
+                  : 'bg-manhwa-surface/70 text-manhwa-text border-manhwa-border hover:bg-manhwa-surface hover:text-manhwa-accent'
+              }`
+            }
+            title="Notifikasi"
+            aria-label="Notifikasi"
+          >
+            <Bell className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2]" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-600 text-white text-[10px] font-bold flex items-center justify-center shadow-xs border border-manhwa-card">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </NavLink>
 
           {user ? (
             <Link
